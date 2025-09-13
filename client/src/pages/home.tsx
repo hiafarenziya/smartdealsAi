@@ -144,12 +144,12 @@ export default function Home() {
             
             {/* Filter Controls */}
             <div className="flex flex-wrap gap-4 mt-6 md:mt-0">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory} data-testid="filter-category">
+              <Select value={selectedCategory || "all"} onValueChange={(value) => setSelectedCategory(value === "all" ? "" : value)} data-testid="filter-category">
                 <SelectTrigger className="bg-card border border-border w-48">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="Electronics">Electronics</SelectItem>
                   <SelectItem value="Fashion">Fashion</SelectItem>
                   <SelectItem value="Home & Garden">Home & Garden</SelectItem>
@@ -157,12 +157,12 @@ export default function Home() {
                 </SelectContent>
               </Select>
               
-              <Select value={selectedPlatform} onValueChange={setSelectedPlatform} data-testid="filter-platform">
+              <Select value={selectedPlatform || "all"} onValueChange={(value) => setSelectedPlatform(value === "all" ? "" : value)} data-testid="filter-platform">
                 <SelectTrigger className="bg-card border border-border w-48">
                   <SelectValue placeholder="All Platforms" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Platforms</SelectItem>
+                  <SelectItem value="all">All Platforms</SelectItem>
                   <SelectItem value="Amazon">Amazon</SelectItem>
                   <SelectItem value="Flipkart">Flipkart</SelectItem>
                   <SelectItem value="Myntra">Myntra</SelectItem>

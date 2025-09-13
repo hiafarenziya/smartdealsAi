@@ -66,24 +66,24 @@ export default function Products() {
 
             {/* Filters */}
             <div className="flex flex-wrap gap-4 items-center">
-              <Select value={selectedPlatform} onValueChange={setSelectedPlatform} data-testid="filter-platform">
+              <Select value={selectedPlatform || "all"} onValueChange={(value) => setSelectedPlatform(value === "all" ? "" : value)} data-testid="filter-platform">
                 <SelectTrigger className="w-40 bg-background border-border">
                   <SelectValue placeholder="Platform" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Platforms</SelectItem>
+                  <SelectItem value="all">All Platforms</SelectItem>
                   <SelectItem value="Amazon">Amazon</SelectItem>
                   <SelectItem value="Flipkart">Flipkart</SelectItem>
                   <SelectItem value="Myntra">Myntra</SelectItem>
                 </SelectContent>
               </Select>
               
-              <Select value={selectedCategory} onValueChange={setSelectedCategory} data-testid="filter-category">
+              <Select value={selectedCategory || "all"} onValueChange={(value) => setSelectedCategory(value === "all" ? "" : value)} data-testid="filter-category">
                 <SelectTrigger className="w-40 bg-background border-border">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="Electronics">Electronics</SelectItem>
                   <SelectItem value="Fashion">Fashion</SelectItem>
                   <SelectItem value="Home & Garden">Home & Garden</SelectItem>
