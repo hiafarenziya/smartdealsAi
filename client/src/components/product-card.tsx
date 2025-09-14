@@ -84,7 +84,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         <div className="flex-1 flex flex-col justify-between p-3 min-w-0">
           <div className="space-y-2">
             {/* Title */}
-            <h3 className="font-medium text-sm line-clamp-2 text-foreground leading-tight" data-testid={`product-title-${product.id}`}>
+            <h3 className="font-medium text-base line-clamp-2 text-foreground leading-tight" data-testid={`product-title-${product.id}`}>
               {product.title}
             </h3>
             
