@@ -146,7 +146,7 @@ export default function ProductManagement() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h3 className="text-lg sm:text-xl font-semibold flex items-center">
             <Package className="text-primary mr-2 w-4 h-4 sm:w-5 sm:h-5" />
@@ -162,8 +162,8 @@ export default function ProductManagement() {
       </div>
 
       {/* Search Bar */}
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6">
-        <Search className="absolute left-7 sm:left-9 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
         <Input
           placeholder="Search products by name, platform, or category..."
           value={searchQuery}
@@ -190,7 +190,7 @@ export default function ProductManagement() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-2 sm:gap-3 max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="grid gap-2 sm:gap-3">
           {filteredProducts.map((product) => (
             <Card key={product.id} className="glass-effect border-border">
               <CardContent className="p-2 sm:p-3">
