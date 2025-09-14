@@ -14,7 +14,16 @@ interface AnalyticsData {
   recentlyAdded: Product[];
 }
 
-const COLORS = ['#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EF4444'];
+const COLORS = [
+  'hsl(271, 76%, 63%)',  // Primary Purple
+  'hsl(217, 91%, 65%)',  // Secondary Blue  
+  'hsl(159, 100%, 46%)', // Success Green
+  'hsl(42, 93%, 60%)',   // Warning Orange
+  'hsl(0, 84%, 65%)',    // Destructive Red
+  'hsl(280, 100%, 70%)', // Accent Purple
+  'hsl(200, 100%, 60%)', // Info Blue
+  'hsl(120, 60%, 50%)',  // Chart Green
+];
 
 export default function AnalyticsDashboard() {
   const { data: analytics, isLoading } = useQuery<AnalyticsData>({
@@ -43,65 +52,69 @@ export default function AnalyticsDashboard() {
     <div className="space-y-6" data-testid="analytics-dashboard">
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-        <Card className="glass-effect border-border">
-          <CardContent className="p-3 sm:p-4 lg:p-6">
+        <Card className="glass-effect border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/50">
+          <CardContent className="p-4 sm:p-5 lg:p-6">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Total Products</p>
-                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary" data-testid="total-products">
+                <p className="text-xs sm:text-sm font-semibold text-muted-foreground truncate uppercase tracking-wide">Total Products</p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mt-2" data-testid="total-products">
                   {analytics.totalProducts}
                 </p>
+                <p className="text-xs text-muted-foreground mt-1">Products in catalog</p>
               </div>
-              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center flex-shrink-0">
-                <Package className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-primary via-primary/90 to-secondary rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-effect border-border">
-          <CardContent className="p-3 sm:p-4 lg:p-6">
+        <Card className="glass-effect border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:border-secondary/50">
+          <CardContent className="p-4 sm:p-5 lg:p-6">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Featured Products</p>
-                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary" data-testid="featured-products">
+                <p className="text-xs sm:text-sm font-semibold text-muted-foreground truncate uppercase tracking-wide">Featured Products</p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-secondary mt-2" data-testid="featured-products">
                   {analytics.featuredProducts}
                 </p>
+                <p className="text-xs text-muted-foreground mt-1">Highlighted products</p>
               </div>
-              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
-                <Star className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-secondary via-secondary/90 to-accent rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Star className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white fill-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-effect border-border">
-          <CardContent className="p-3 sm:p-4 lg:p-6">
+        <Card className="glass-effect border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:border-accent/50">
+          <CardContent className="p-4 sm:p-5 lg:p-6">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Avg. Discount</p>
-                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-accent" data-testid="avg-discount">
+                <p className="text-xs sm:text-sm font-semibold text-muted-foreground truncate uppercase tracking-wide">Avg. Discount</p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-accent mt-2" data-testid="avg-discount">
                   {analytics.averageDiscount.toFixed(1)}%
                 </p>
+                <p className="text-xs text-muted-foreground mt-1">Average savings</p>
               </div>
-              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-accent to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Percent className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-accent via-accent/90 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Percent className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-effect border-border">
-          <CardContent className="p-3 sm:p-4 lg:p-6">
+        <Card className="glass-effect border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:border-primary/50">
+          <CardContent className="p-4 sm:p-5 lg:p-6">
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Active Platforms</p>
-                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary" data-testid="active-platforms">
+                <p className="text-xs sm:text-sm font-semibold text-muted-foreground truncate uppercase tracking-wide">Active Platforms</p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mt-2" data-testid="active-platforms">
                   {analytics.platformDistribution.length}
                 </p>
+                <p className="text-xs text-muted-foreground mt-1">Connected platforms</p>
               </div>
-              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
-                <Target className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-primary via-secondary to-accent rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Target className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
               </div>
             </div>
           </CardContent>
@@ -111,16 +124,18 @@ export default function AnalyticsDashboard() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Platform Distribution */}
-        <Card className="glass-effect border-border">
-          <CardHeader className="pb-3 sm:pb-6">
-            <CardTitle className="flex items-center text-sm sm:text-base lg:text-lg">
-              <ShoppingCart className="mr-2 w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+        <Card className="glass-effect border-border shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-3 sm:pb-6 border-b border-border/50">
+            <CardTitle className="flex items-center text-sm sm:text-base lg:text-lg font-semibold">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center mr-3">
+                <ShoppingCart className="w-4 h-4 text-white" />
+              </div>
               Platform Distribution
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">Products by platform</CardDescription>
+            <CardDescription className="text-xs sm:text-sm text-muted-foreground">Product distribution across platforms</CardDescription>
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="h-48 sm:h-64 lg:h-80">
+          <CardContent className="pt-6">
+            <div className="h-56 sm:h-64 lg:h-80 mb-4">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -128,60 +143,121 @@ export default function AnalyticsDashboard() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={window.innerWidth < 640 ? 60 : window.innerWidth < 1024 ? 70 : 80}
-                    fill="#8884d8"
+                    label={({ name, percent }) => `${name}\n${(percent * 100).toFixed(0)}%`}
+                    outerRadius={window.innerWidth < 640 ? 70 : window.innerWidth < 1024 ? 85 : 95}
+                    innerRadius={window.innerWidth < 640 ? 25 : window.innerWidth < 1024 ? 35 : 40}
+                    paddingAngle={2}
                     dataKey="value"
+                    stroke="hsl(var(--background))"
+                    strokeWidth={2}
                   >
                     {analytics.platformDistribution.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={COLORS[index % COLORS.length]}
+                        className="hover:opacity-80 transition-opacity duration-200"
+                      />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "12px",
+                      boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+                      color: "hsl(var(--foreground))"
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
+            </div>
+            {/* Legend */}
+            <div className="flex flex-wrap gap-2 justify-center">
+              {analytics.platformDistribution.map((item, index) => (
+                <div key={item.name} className="flex items-center gap-2 px-3 py-1 rounded-full bg-muted/30">
+                  <div 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  />
+                  <span className="text-xs font-medium">{item.name}</span>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
         {/* Category Distribution */}
-        <Card className="glass-effect border-border">
-          <CardHeader className="pb-3 sm:pb-6">
-            <CardTitle className="flex items-center text-sm sm:text-base lg:text-lg">
-              <TrendingUp className="mr-2 w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
+        <Card className="glass-effect border-border shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-3 sm:pb-6 border-b border-border/50">
+            <CardTitle className="flex items-center text-sm sm:text-base lg:text-lg font-semibold">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-secondary to-accent flex items-center justify-center mr-3">
+                <TrendingUp className="w-4 h-4 text-white" />
+              </div>
               Category Performance
             </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">Products by category</CardDescription>
+            <CardDescription className="text-xs sm:text-sm text-muted-foreground">Product performance by category</CardDescription>
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="h-48 sm:h-64 lg:h-80">
+          <CardContent className="pt-6">
+            <div className="h-56 sm:h-64 lg:h-80 mb-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={analytics.categoryDistribution}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <BarChart 
+                  data={analytics.categoryDistribution}
+                  margin={{ top: 10, right: 10, left: 10, bottom: window.innerWidth < 640 ? 50 : 20 }}
+                >
+                  <defs>
+                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.9} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.6} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    stroke="hsl(var(--border))" 
+                    strokeOpacity={0.3}
+                    vertical={false}
+                  />
                   <XAxis 
                     dataKey="name" 
                     stroke="hsl(var(--muted-foreground))" 
-                    fontSize={window.innerWidth < 640 ? 10 : 12}
+                    fontSize={window.innerWidth < 640 ? 11 : 13}
                     tickLine={false}
                     axisLine={false}
-                    angle={window.innerWidth < 640 ? -45 : 0}
+                    angle={window.innerWidth < 640 ? -35 : 0}
                     textAnchor={window.innerWidth < 640 ? 'end' : 'middle'}
-                    height={window.innerWidth < 640 ? 60 : 30}
+                    height={window.innerWidth < 640 ? 60 : 35}
+                    interval={0}
                   />
                   <YAxis 
                     stroke="hsl(var(--muted-foreground))" 
-                    fontSize={window.innerWidth < 640 ? 10 : 12}
+                    fontSize={window.innerWidth < 640 ? 11 : 13}
                     tickLine={false}
                     axisLine={false}
+                    width={40}
                   />
                   <Tooltip 
                     contentStyle={{
                       backgroundColor: "hsl(var(--card))",
                       border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px"
+                      borderRadius: "12px",
+                      boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+                      color: "hsl(var(--foreground))"
                     }}
+                    cursor={{ fill: 'hsl(var(--muted))', fillOpacity: 0.1 }}
                   />
-                  <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  <Bar 
+                    dataKey="value" 
+                    fill="url(#barGradient)" 
+                    radius={[6, 6, 0, 0]}
+                    maxBarSize={60}
+                  >
+                    {analytics.categoryDistribution.map((_, index) => (
+                      <Cell 
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                        className="hover:opacity-80 transition-opacity duration-200"
+                      />
+                    ))}
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -190,48 +266,78 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* Recent Products */}
-      <Card className="glass-effect border-border">
-        <CardHeader className="pb-3 sm:pb-6">
-          <CardTitle className="text-sm sm:text-base lg:text-lg">Recently Added Products</CardTitle>
-          <CardDescription className="text-xs sm:text-sm">Latest products added to the catalog</CardDescription>
+      <Card className="glass-effect border-border shadow-lg hover:shadow-xl transition-all duration-300">
+        <CardHeader className="pb-3 sm:pb-6 border-b border-border/50">
+          <CardTitle className="flex items-center text-sm sm:text-base lg:text-lg font-semibold">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent to-orange-500 flex items-center justify-center mr-3">
+              <Package className="w-4 h-4 text-white" />
+            </div>
+            Recently Added Products
+          </CardTitle>
+          <CardDescription className="text-xs sm:text-sm text-muted-foreground">Latest products added to the catalog</CardDescription>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-6">
           <div className="space-y-3">
             {analytics.recentlyAdded.length === 0 ? (
-              <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm">No products added yet</p>
+              <div className="text-center py-8">
+                <div className="w-16 h-16 mx-auto rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                  <Package className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <p className="text-muted-foreground text-sm font-medium">No products added yet</p>
+                <p className="text-xs text-muted-foreground mt-1">Start adding products to see them here</p>
+              </div>
             ) : (
               analytics.recentlyAdded.map((product) => (
-                <div key={product.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-muted/30 rounded-lg border border-border/50 gap-3 sm:gap-0">
-                  <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    {product.imageUrl && (
-                      <img 
-                        src={product.imageUrl} 
-                        alt={product.title}
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover bg-muted flex-shrink-0"
-                      />
-                    )}
+                <div key={product.id} className="group flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gradient-to-r from-muted/20 to-muted/10 hover:from-muted/30 hover:to-muted/20 rounded-xl border border-border/50 hover:border-border transition-all duration-200 gap-3 sm:gap-0">
+                  <div className="flex items-center space-x-4 min-w-0 flex-1">
+                    <div className="relative flex-shrink-0">
+                      {product.imageUrl ? (
+                        <img 
+                          src={product.imageUrl} 
+                          alt={product.title}
+                          className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover bg-muted ring-2 ring-border/20"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-muted to-muted/70 flex items-center justify-center ring-2 ring-border/20">
+                          <Package className="w-6 h-6 text-muted-foreground" />
+                        </div>
+                      )}
+                      {product.featured && (
+                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center">
+                          <Star className="w-3 h-3 text-white fill-white" />
+                        </div>
+                      )}
+                    </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-xs sm:text-sm line-clamp-1 sm:line-clamp-2">{product.title}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <Badge variant="outline" className="text-xs">
+                      <p className="font-semibold text-sm sm:text-base line-clamp-2 mb-2 group-hover:text-primary transition-colors">{product.title}</p>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="outline" className="text-xs font-medium px-2 py-1">
                           {product.platform}
                         </Badge>
-                        {product.featured && (
-                          <Badge variant="secondary" className="text-xs">
-                            <Star className="w-3 h-3 mr-1" />
-                            Featured
+                        {product.category && (
+                          <Badge variant="secondary" className="text-xs font-medium px-2 py-1">
+                            {product.category}
                           </Badge>
                         )}
                       </div>
                     </div>
                   </div>
                   <div className="text-left sm:text-right flex-shrink-0">
-                    {product.discountedPrice && (
-                      <p className="font-semibold text-primary text-sm sm:text-base">₹{product.discountedPrice}</p>
-                    )}
-                    {product.originalPrice && product.discountedPrice && (
-                      <p className="text-xs text-muted-foreground line-through">₹{product.originalPrice}</p>
-                    )}
+                    <div className="flex flex-col items-start sm:items-end gap-1">
+                      {product.discountedPrice && (
+                        <p className="font-bold text-primary text-lg">₹{product.discountedPrice}</p>
+                      )}
+                      {product.originalPrice && product.discountedPrice && (
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs text-muted-foreground line-through">₹{product.originalPrice}</p>
+                          {product.discountPercentage && (
+                            <Badge variant="destructive" className="text-xs font-bold">
+                              {product.discountPercentage}% OFF
+                            </Badge>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))
