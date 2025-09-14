@@ -1,9 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
+import { useLocation } from "wouter";
 import type { Category, Platform } from "@shared/schema";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import SEO from "@/components/seo";
 import ProductCard from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +17,7 @@ import { Search, Filter, Grid, List, SlidersHorizontal, X } from "lucide-react";
 import type { Product } from "@shared/schema";
 
 export default function Products() {
+  const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -22,6 +25,18 @@ export default function Products() {
   const [sortBy, setSortBy] = useState<string>("newest");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [showFilters, setShowFilters] = useState(false);
+
+  // Initialize state from URL parameters on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search');
+    const platformParam = urlParams.get('platform');
+    const categoryParam = urlParams.get('category');
+    
+    if (searchParam) setSearchQuery(searchParam);
+    if (platformParam) setSelectedPlatform(platformParam);
+    if (categoryParam) setSelectedCategory(categoryParam);
+  }, [location]);
 
   // Debounce search query to prevent excessive API calls
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
@@ -70,8 +85,35 @@ export default function Products() {
     return count;
   }, [searchQuery, selectedPlatform, selectedCategory, sortBy, priceRange]);
 
+  // Generate dynamic SEO based on filters
+  const generateSEOTitle = () => {
+    if (selectedPlatform && selectedCategory) {
+      return `${selectedCategory} Deals on ${selectedPlatform} - Best Prices & Offers`;
+    } else if (selectedPlatform) {
+      return `${selectedPlatform} Deals & Offers - Best Prices on All Products`;
+    } else if (selectedCategory) {
+      return `${selectedCategory} Deals - Best Prices from Amazon, Flipkart & Myntra`;
+    } else if (searchQuery) {
+      return `${searchQuery} Deals - Best Prices & Offers`;
+    }
+    return "All Products & Deals - Best Prices from Amazon, Flipkart & Myntra";
+  };
+
+  const generateSEODescription = () => {
+    const baseDesc = "Browse through our complete collection of AI-curated deals from Amazon, Flipkart, and Myntra. ";
+    if (selectedPlatform) {
+      return `${baseDesc}Find the best ${selectedPlatform} deals and save up to 50% on your favorite products.`;
+    }
+    return `${baseDesc}Save up to 50% on electronics, fashion, home & garden products with smart AI recommendations.`;
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO 
+        title={generateSEOTitle()}
+        description={generateSEODescription()}
+        keywords={`${selectedPlatform || ''} ${selectedCategory || ''} deals, discounts, offers, best prices, online shopping, India`.trim()}
+      />
       <Header />
       
       {/* Hero Section */}

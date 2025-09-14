@@ -1,9 +1,15 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import SEO from "@/components/seo";
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO 
+        title="Privacy Policy"
+        description="Read Smart Deals AI's privacy policy to understand how we collect, use, and protect your personal information when using our deal discovery platform."
+        keywords="privacy policy, data protection, personal information, Smart Deals AI"
+      />
       <Header />
       
       <section className="py-20">

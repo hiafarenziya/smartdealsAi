@@ -1,0 +1,39 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://smart-deals-ai.replit.app/sitemap.xml
+
+# Crawl-delay for bots (optional)
+Crawl-delay: 1
+
+# Disallow admin pages
+Disallow: /admin
+
+# Allow all other pages
+Allow: /products
+Allow: /privacy-policy
+Allow: /terms-of-service
+Allow: /affiliate-disclosure
+Allow: /refund-policy
+Allow: /cookie-policy
+
+# Specific bot instructions
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block bad bots
+User-agent: BadBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /

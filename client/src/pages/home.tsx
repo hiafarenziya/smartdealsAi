@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import SEO from "@/components/seo";
 import ProductCard from "@/components/product-card";
 import ContactForm from "@/components/contact-form";
 import { Button } from "@/components/ui/button";
@@ -71,10 +72,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <SEO 
+        title="Best Deals from Amazon, Flipkart & Myntra"
+        description="Discover exclusive deals and discounts on Amazon, Flipkart, Myntra with our AI-powered search engine. Save up to 50% on electronics, fashion, home & garden products."
+        keywords="deals, discounts, Amazon deals, Flipkart offers, Myntra sale, AI shopping, best prices, India online shopping, product deals, smart shopping"
+        canonical="https://smart-deals-ai.replit.app/"
+      />
       <Header />
       
       {/* Hero Section */}
-      <section className="gradient-bg relative overflow-hidden">
+      <main aria-label="Main content">
+        <section className="gradient-bg relative overflow-hidden" role="banner" aria-label="Hero section with search">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/20"></div>
         <div className="relative container mx-auto px-4 py-24 lg:py-32">
           <div className="max-w-4xl mx-auto text-center">
@@ -151,10 +159,10 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-card/30" id="about">
+        {/* Features Section */}
+        <section className="py-20 bg-card/30" id="about" aria-label="How AI finds deals">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="features-title">How Our AI Finds the Best Deals</h2>
@@ -191,8 +199,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <section className="py-20" id="products">
+        {/* Featured Products Section */}
+        <section className="py-20" id="products" aria-label="Featured products and deals">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-12">
             <div>
@@ -303,8 +311,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-20 bg-card/30" id="categories">
+        {/* Categories Section */}
+        <section className="py-20 bg-card/30" id="categories" aria-label="Shop by platform">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="categories-title">Shop by Platform</h2>
@@ -368,8 +376,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-20">
+        {/* Contact Section */}
+        <section className="py-20" aria-label="Contact form">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="contact-title">Get in Touch</h2>
@@ -384,8 +392,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 gradient-bg">
+        {/* CTA Section */}
+        <section className="py-20 gradient-bg" aria-label="Call to action">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="cta-title">Ready to Save Big with AI?</h2>
@@ -414,7 +422,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </main>
 
       <Footer />
     </div>
