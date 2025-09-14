@@ -54,7 +54,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <img 
             src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
             alt={product.title} 
-            className="w-full h-full object-contain max-w-[90%] max-h-[90%] group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain max-w-[90%] max-h-[90%] group-hover:scale-105 transition-transform duration-300 rounded-xl"
             data-testid={`product-image-${product.id}`}
             loading="lazy"
           />
