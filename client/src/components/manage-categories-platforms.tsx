@@ -24,11 +24,26 @@ const PLATFORM_EMOJIS = [
   "🔥", "⭐", "✨", "💫", "🎪", "🎨", "📸", "🎬", "🔊", "⚡",
 ];
 
+// Category specific emojis
+const CATEGORY_EMOJIS = [
+  "📱", "💻", "⌚", "🎧", "📸", "🖥️", "⌨️", "🖱️", "📺", "📻",
+  "👕", "👔", "👗", "👠", "👜", "👞", "🧥", "👖", "👟", "🕶️",
+  "🍔", "🍕", "☕", "🍩", "🧁", "🍰", "🥤", "🍪", "🥗", "🍎",
+  "🏠", "🛋️", "🛏️", "🚿", "🔧", "🔨", "🧽", "🪴", "🕯️", "💡",
+  "🎮", "🎯", "⚽", "🏀", "🎾", "🏓", "🎲", "🎪", "🎨", "🎵",
+  "📚", "✏️", "🖊️", "📝", "📄", "📋", "🎒", "📐", "🖍️", "📖",
+  "🩺", "💊", "🧴", "🧼", "🪥", "🧽", "🧻", "🌡️", "💉", "🩹",
+  "🚗", "🏍️", "🚴", "🛴", "🚂", "✈️", "🚁", "⛽", "🔧", "🛞",
+  "💍", "💎", "⌚", "👑", "💄", "💅", "🪞", "🎀", "🌹", "💐",
+  "🧸", "👶", "🍼", "🎈", "🎁", "🧷", "👕", "🧦", "👒", "🎪",
+];
+
 export function ManageCategoriesPlatforms() {
   const { toast } = useToast();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingPlatform, setEditingPlatform] = useState<Platform | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showCategoryEmojiPicker, setShowCategoryEmojiPicker] = useState(false);
 
   // Fetch categories and platforms
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
@@ -143,6 +158,7 @@ export function ManageCategoriesPlatforms() {
     defaultValues: {
       name: "",
       description: "",
+      icon: "",
       isActive: true
     }
   });
@@ -179,6 +195,7 @@ export function ManageCategoriesPlatforms() {
     categoryForm.reset({
       name: category.name,
       description: category.description || "",
+      icon: category.icon || "",
       isActive: category.isActive || false
     });
   };
@@ -198,6 +215,7 @@ export function ManageCategoriesPlatforms() {
     categoryForm.reset({
       name: "",
       description: "",
+      icon: "",
       isActive: true
     });
   };
@@ -290,6 +308,62 @@ export function ManageCategoriesPlatforms() {
 
                   <FormField
                     control={categoryForm.control}
+                    name="icon"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm">Icon (Emoji)</FormLabel>
+                        <FormControl>
+                          <div className="flex gap-2">
+                            <Input 
+                              placeholder="📱 👕 🍔" 
+                              {...field} 
+                              data-testid="input-category-icon"
+                              className="text-sm flex-1"
+                            />
+                            <Popover open={showCategoryEmojiPicker} onOpenChange={setShowCategoryEmojiPicker}>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="px-3"
+                                  title="Choose Emoji"
+                                >
+                                  <Smile className="w-4 h-4" />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80 p-2">
+                                <div className="grid grid-cols-8 gap-1">
+                                  {CATEGORY_EMOJIS.map((emoji, index) => (
+                                    <Button
+                                      key={index}
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0 hover:bg-accent text-lg"
+                                      onClick={() => {
+                                        field.onChange(emoji);
+                                        setShowCategoryEmojiPicker(false);
+                                      }}
+                                    >
+                                      {emoji}
+                                    </Button>
+                                  ))}
+                                </div>
+                                <div className="mt-2 pt-2 border-t text-xs text-muted-foreground text-center">
+                                  Click an emoji to select it
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={categoryForm.control}
                     name="isActive"
                     render={({ field }) => (
                       <FormItem className="flex items-center justify-between rounded-lg border p-3">
@@ -356,6 +430,11 @@ export function ManageCategoriesPlatforms() {
                     >
                       <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
+                          {category.icon && (
+                            <span className="text-lg" data-testid={`icon-category-${category.id}`}>
+                              {category.icon}
+                            </span>
+                          )}
                           <h3 className="font-medium text-sm sm:text-base" data-testid={`text-category-name-${category.id}`}>
                             {category.name}
                           </h3>
