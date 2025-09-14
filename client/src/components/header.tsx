@@ -31,10 +31,10 @@ export default function Header() {
             <Link href="/products" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-products">
               Products
             </Link>
-            <Link href="#categories" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-categories">
+            <Link href="/products" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-categories">
               Categories
             </Link>
-            <Link href="#about" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-about">
+            <Link href="/about" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-about">
               About
             </Link>
             <Link href="/admin" className="text-muted-foreground hover:text-primary transition-colors text-xs xl:text-sm" data-testid="nav-admin">
@@ -89,7 +89,7 @@ export default function Header() {
                 Products
               </Link>
               <Link 
-                href="#categories" 
+                href="/products" 
                 className="text-foreground hover:text-primary transition-colors font-medium py-2 px-2 rounded-lg hover:bg-muted/50" 
                 data-testid="mobile-nav-categories"
                 onClick={() => setIsMenuOpen(false)}
@@ -97,7 +97,7 @@ export default function Header() {
                 Categories
               </Link>
               <Link 
-                href="#about" 
+                href="/about" 
                 className="text-foreground hover:text-primary transition-colors font-medium py-2 px-2 rounded-lg hover:bg-muted/50" 
                 data-testid="mobile-nav-about"
                 onClick={() => setIsMenuOpen(false)}
