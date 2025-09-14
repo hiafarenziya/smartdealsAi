@@ -9,74 +9,19 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { insertCategorySchema, insertPlatformSchema, type Category, type Platform } from "@shared/schema";
-import { Trash2, Edit, Plus, Tag, Globe, Smile } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Trash2, Edit, Plus, Tag, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// Common ecommerce and shopping emojis
-const PLATFORM_EMOJIS = [
-  "🛒", "🛍️", "👕", "👔", "👗", "👠", "👜", "💍", "📱", "💻", 
-  "🏪", "🏬", "🎁", "📦", "🚚", "💳", "💰", "🛎️", "🏷️", "🎯",
-  "📚", "🍔", "☕", "🍕", "🥘", "🎮", "🏠", "⚽", "🎵", "🌟",
-  "🔥", "⭐", "✨", "💫", "🎪", "🎨", "📸", "🎬", "🔊", "⚡",
-];
 
-// Category specific emojis
-const CATEGORY_EMOJIS = [
-  "📱", "💻", "⌚", "🎧", "📸", "🖥️", "⌨️", "🖱️", "📺", "📻",
-  "👕", "👔", "👗", "👠", "👜", "👞", "🧥", "👖", "👟", "🕶️",
-  "🍔", "🍕", "☕", "🍩", "🧁", "🍰", "🥤", "🍪", "🥗", "🍎",
-  "🏠", "🛋️", "🛏️", "🚿", "🔧", "🔨", "🧽", "🪴", "🕯️", "💡",
-  "🎮", "🎯", "⚽", "🏀", "🎾", "🏓", "🎲", "🎪", "🎨", "🎵",
-  "📚", "✏️", "🖊️", "📝", "📄", "📋", "🎒", "📐", "🖍️", "📖",
-  "🩺", "💊", "🧴", "🧼", "🪥", "🧽", "🧻", "🌡️", "💉", "🩹",
-  "🚗", "🏍️", "🚴", "🛴", "🚂", "✈️", "🚁", "⛽", "🔧", "🛞",
-  "💍", "💎", "⌚", "👑", "💄", "💅", "🪞", "🎀", "🌹", "💐",
-  "🧸", "👶", "🍼", "🎈", "🎁", "🧷", "👕", "🧦", "👒", "🎪",
-];
 
-// Helper function to render icon (emoji or image URL)
-const IconRenderer = ({ icon, className = "text-lg", alt = "Icon" }: { 
-  icon?: string; 
-  className?: string; 
-  alt?: string; 
-}) => {
-  if (!icon) return null;
-  
-  const isUrl = icon.startsWith('https://');
-  
-  if (isUrl) {
-    return (
-      <img 
-        src={icon} 
-        alt={alt}
-        className={`w-5 h-5 object-contain ${className}`}
-        onError={(e) => {
-          // Fallback to first letter if image fails to load
-          e.currentTarget.style.display = 'none';
-          (e.currentTarget.nextElementSibling as HTMLElement)!.style.display = 'inline-block';
-        }}
-        loading="lazy"
-        referrerPolicy="no-referrer"
-      />
-    );
-  }
-  
-  return <span className={className}>{icon}</span>;
-};
 
 export function ManageCategoriesPlatforms() {
   const { toast } = useToast();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingPlatform, setEditingPlatform] = useState<Platform | null>(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showCategoryEmojiPicker, setShowCategoryEmojiPicker] = useState(false);
-  const [categoryIconType, setCategoryIconType] = useState<'emoji' | 'url'>('emoji');
-  const [platformIconType, setPlatformIconType] = useState<'emoji' | 'url'>('emoji');
 
   // Fetch categories and platforms
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
@@ -339,125 +284,6 @@ export function ManageCategoriesPlatforms() {
                     )}
                   />
 
-                  <FormField
-                    control={categoryForm.control}
-                    name="icon"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">Category Icon</FormLabel>
-                        <FormControl>
-                          <div className="space-y-3">
-                            {/* Icon Type Toggle */}
-                            <RadioGroup
-                              value={categoryIconType}
-                              onValueChange={(value: 'emoji' | 'url') => {
-                                setCategoryIconType(value);
-                                if (value !== categoryIconType) {
-                                  field.onChange(''); // Clear current value when switching
-                                }
-                              }}
-                              className="flex gap-4"
-                            >
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="emoji" id="category-emoji" />
-                                <label htmlFor="category-emoji" className="text-sm font-medium">
-                                  Emoji
-                                </label>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="url" id="category-url" />
-                                <label htmlFor="category-url" className="text-sm font-medium">
-                                  Image URL
-                                </label>
-                              </div>
-                            </RadioGroup>
-
-                            {/* Conditional Input Based on Type */}
-                            {categoryIconType === 'emoji' ? (
-                              <div className="flex gap-2">
-                                <Input 
-                                  placeholder="📱 👕 🍔" 
-                                  {...field} 
-                                  data-testid="input-category-icon"
-                                  className="text-sm flex-1"
-                                />
-                                <Popover open={showCategoryEmojiPicker} onOpenChange={setShowCategoryEmojiPicker}>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="sm"
-                                      className="px-3"
-                                      title="Choose Emoji"
-                                    >
-                                      <Smile className="w-4 h-4" />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-80 p-2">
-                                    <div className="grid grid-cols-8 gap-1">
-                                      {CATEGORY_EMOJIS.map((emoji, index) => (
-                                        <Button
-                                          key={index}
-                                          type="button"
-                                          variant="ghost"
-                                          size="sm"
-                                          className="h-8 w-8 p-0 hover:bg-accent text-lg"
-                                          onClick={() => {
-                                            field.onChange(emoji);
-                                            setShowCategoryEmojiPicker(false);
-                                          }}
-                                        >
-                                          {emoji}
-                                        </Button>
-                                      ))}
-                                    </div>
-                                    <div className="mt-2 pt-2 border-t text-xs text-muted-foreground text-center">
-                                      Click an emoji to select it
-                                    </div>
-                                  </PopoverContent>
-                                </Popover>
-                              </div>
-                            ) : (
-                              <div className="space-y-2">
-                                <Input 
-                                  placeholder="https://example.com/icon.png" 
-                                  {...field} 
-                                  data-testid="input-category-icon-url"
-                                  className="text-sm"
-                                />
-                                <FormDescription className="text-xs text-muted-foreground">
-                                  Use HTTPS URLs only. Supported: PNG, JPG, SVG, WebP
-                                </FormDescription>
-                                {/* Live Preview */}
-                                {field.value && field.value.startsWith('https://') && (
-                                  <div className="mt-2 p-2 border rounded-lg bg-muted/50">
-                                    <p className="text-xs font-medium mb-1">Preview:</p>
-                                    <img 
-                                      src={field.value} 
-                                      alt="Icon preview" 
-                                      className="w-8 h-8 object-contain rounded"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none';
-                                        (e.currentTarget.nextElementSibling as HTMLElement)!.style.display = 'block';
-                                      }}
-                                      onLoad={(e) => {
-                                        e.currentTarget.style.display = 'block';
-                                        (e.currentTarget.nextElementSibling as HTMLElement)!.style.display = 'none';
-                                      }}
-                                    />
-                                    <div className="text-xs text-red-500 hidden">
-                                      ❌ Failed to load image
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <FormField
                     control={categoryForm.control}
@@ -527,11 +353,6 @@ export function ManageCategoriesPlatforms() {
                     >
                       <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <IconRenderer 
-                            icon={category.icon || undefined} 
-                            alt={`${category.name} icon`}
-                            className="text-lg"
-                          />
                           <span className="hidden text-xs bg-muted px-1 rounded">
                             {category.name.charAt(0).toUpperCase()}
                           </span>
@@ -608,125 +429,6 @@ export function ManageCategoriesPlatforms() {
                     )}
                   />
 
-                  <FormField
-                    control={platformForm.control}
-                    name="icon"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm">Platform Icon</FormLabel>
-                        <FormControl>
-                          <div className="space-y-3">
-                            {/* Icon Type Toggle */}
-                            <RadioGroup
-                              value={platformIconType}
-                              onValueChange={(value: 'emoji' | 'url') => {
-                                setPlatformIconType(value);
-                                if (value !== platformIconType) {
-                                  field.onChange(''); // Clear current value when switching
-                                }
-                              }}
-                              className="flex gap-4"
-                            >
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="emoji" id="platform-emoji" />
-                                <label htmlFor="platform-emoji" className="text-sm font-medium">
-                                  Emoji
-                                </label>
-                              </div>
-                              <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="url" id="platform-url" />
-                                <label htmlFor="platform-url" className="text-sm font-medium">
-                                  Image URL
-                                </label>
-                              </div>
-                            </RadioGroup>
-
-                            {/* Conditional Input Based on Type */}
-                            {platformIconType === 'emoji' ? (
-                              <div className="flex gap-2">
-                                <Input 
-                                  placeholder="🛒 🛍️ 👕" 
-                                  {...field} 
-                                  data-testid="input-platform-icon"
-                                  className="text-sm flex-1"
-                                />
-                                <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
-                                  <PopoverTrigger asChild>
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="sm"
-                                      className="px-3"
-                                      title="Choose Emoji"
-                                    >
-                                      <Smile className="w-4 h-4" />
-                                    </Button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-80 p-2">
-                                    <div className="grid grid-cols-8 gap-1">
-                                      {PLATFORM_EMOJIS.map((emoji, index) => (
-                                        <Button
-                                          key={index}
-                                          type="button"
-                                          variant="ghost"
-                                          size="sm"
-                                          className="h-8 w-8 p-0 hover:bg-accent text-lg"
-                                          onClick={() => {
-                                            field.onChange(emoji);
-                                            setShowEmojiPicker(false);
-                                          }}
-                                        >
-                                          {emoji}
-                                        </Button>
-                                      ))}
-                                    </div>
-                                    <div className="mt-2 pt-2 border-t text-xs text-muted-foreground text-center">
-                                      Click an emoji to select it
-                                    </div>
-                                  </PopoverContent>
-                                </Popover>
-                              </div>
-                            ) : (
-                              <div className="space-y-2">
-                                <Input 
-                                  placeholder="https://example.com/logo.png" 
-                                  {...field} 
-                                  data-testid="input-platform-icon-url"
-                                  className="text-sm"
-                                />
-                                <FormDescription className="text-xs text-muted-foreground">
-                                  Use HTTPS URLs only. Supported: PNG, JPG, SVG, WebP
-                                </FormDescription>
-                                {/* Live Preview */}
-                                {field.value && field.value.startsWith('https://') && (
-                                  <div className="mt-2 p-2 border rounded-lg bg-muted/50">
-                                    <p className="text-xs font-medium mb-1">Preview:</p>
-                                    <img 
-                                      src={field.value} 
-                                      alt="Icon preview" 
-                                      className="w-8 h-8 object-contain rounded"
-                                      onError={(e) => {
-                                        e.currentTarget.style.display = 'none';
-                                        (e.currentTarget.nextElementSibling as HTMLElement)!.style.display = 'block';
-                                      }}
-                                      onLoad={(e) => {
-                                        e.currentTarget.style.display = 'block';
-                                        (e.currentTarget.nextElementSibling as HTMLElement)!.style.display = 'none';
-                                      }}
-                                    />
-                                    <div className="text-xs text-red-500 hidden">
-                                      ❌ Failed to load image
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
 
                   <FormField
                     control={platformForm.control}
@@ -815,11 +517,6 @@ export function ManageCategoriesPlatforms() {
                     >
                       <div className="space-y-1 min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <IconRenderer 
-                            icon={platform.icon || undefined} 
-                            alt={`${platform.name} icon`}
-                            className="text-lg"
-                          />
                           <span className="hidden text-xs bg-muted px-1 rounded">
                             {platform.name.charAt(0).toUpperCase()}
                           </span>

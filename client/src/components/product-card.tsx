@@ -34,18 +34,6 @@ export default function ProductCard({ product }: ProductCardProps) {
     return stars;
   };
 
-  const getPlatformIcon = (platform: string) => {
-    switch (platform.toLowerCase()) {
-      case 'amazon':
-        return '🛒';
-      case 'flipkart':
-        return '🛍️';
-      case 'myntra':
-        return '👕';
-      default:
-        return '🏪';
-    }
-  };
 
   const getPlatformButtonText = (platform: string) => {
     switch (platform.toLowerCase()) {
@@ -91,11 +79,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.discountPercentage} OFF
           </Badge>
         )}
-        <div className="absolute top-2 right-2 bg-card/80 backdrop-blur-sm rounded-full p-1 shadow-sm">
-          <span className="text-xs" data-testid={`platform-icon-${product.id}`}>
-            {getPlatformIcon(product.platform)}
-          </span>
-        </div>
       </div>
       
       <div className="p-2 md:p-3">
