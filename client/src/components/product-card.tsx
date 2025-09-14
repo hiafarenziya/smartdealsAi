@@ -129,12 +129,13 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         
         <Button 
-          className={`w-full ${getPlatformButtonStyle(product.platform)} py-1.5 md:py-2 rounded-md font-medium transition-all duration-300 shadow-sm hover:shadow-md text-xs md:text-sm`}
+          className={`w-full ${getPlatformButtonStyle(product.platform)} h-8 md:h-9 px-2 md:px-3 rounded-md text-[11px] md:text-sm leading-none gap-1 font-medium shadow-sm hover:shadow-md`}
           onClick={handleAffiliateClick}
           data-testid={`view-deal-button-${product.id}`}
         >
-          <ExternalLink className="mr-1 w-3 h-3" />
-          {getPlatformButtonText(product.platform)}
+          <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
+          <span className="md:hidden whitespace-nowrap">View Deal</span>
+          <span className="hidden md:inline whitespace-nowrap truncate">{getPlatformButtonText(product.platform)}</span>
         </Button>
       </div>
     </div>
