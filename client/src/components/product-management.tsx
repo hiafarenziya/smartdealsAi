@@ -400,7 +400,7 @@ export default function ProductManagement() {
 
       {/* Edit Product Dialog */}
       <Dialog open={editingProduct !== null} onOpenChange={(open) => !open && setEditingProduct(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto mx-4">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto mx-auto my-4 sm:mx-4">
           <DialogHeader className="pb-4">
             <DialogTitle className="text-base sm:text-lg">Edit Product</DialogTitle>
             <DialogDescription className="text-sm">
