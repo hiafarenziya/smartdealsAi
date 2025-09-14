@@ -64,7 +64,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="product-card bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
-      <div className="relative bg-muted/20 dark:bg-muted/10">
+      <div className="relative bg-muted/20 dark:bg-muted/10 pt-3 md:pt-4">
         <div className="aspect-square bg-background/80 dark:bg-muted/20 flex items-center justify-center p-2 md:p-4 overflow-hidden rounded-xl m-0.5 md:m-1">
           <img 
             src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
