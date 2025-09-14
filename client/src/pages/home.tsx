@@ -15,14 +15,51 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const { data: featuredProducts = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products", { featured: true }],
   });
 
-  const handleSearch = () => {
-    // In a real app, this would trigger a search
-    console.log("Searching for:", searchQuery);
+  const { data: searchResultsData = [], isLoading: isSearchLoading, refetch: searchProducts } = useQuery<Product[]>({
+    queryKey: ["/api/products", { search: searchQuery }],
+    enabled: false, // Don't auto-fetch
+  });
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setShowSearchResults(false);
+      return;
+    }
+
+    setIsSearching(true);
+    setShowSearchResults(true);
+    
+    try {
+      await searchProducts();
+    } catch (error) {
+      console.error('Search failed:', error);
+    } finally {
+      setIsSearching(false);
+    }
+    
+    // Scroll to products section
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setShowSearchResults(false);
   };
 
   return (
@@ -56,28 +93,32 @@ export default function Home() {
                   <Input
                     type="text" 
                     placeholder="Search for products, brands..."
-                    className="w-full px-4 sm:px-6 py-3 sm:py-4 pl-12 sm:pl-14 pr-4 sm:pr-32 bg-card border border-border rounded-2xl text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 pl-12 sm:pl-14 pr-4 sm:pr-20 lg:pr-32 bg-card border border-border rounded-2xl text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     data-testid="hero-search-input"
                   />
                   <Search className="absolute left-3 sm:left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
                   <Button 
-                    className="hidden sm:block absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-primary to-secondary text-white px-4 sm:px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-all"
+                    className="hidden sm:flex absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-primary to-secondary text-white px-2 sm:px-3 lg:px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-all items-center text-sm lg:text-base"
                     onClick={handleSearch}
+                    disabled={isSearching}
                     data-testid="hero-search-button-desktop"
                   >
-                    <Sparkles className="mr-2 w-4 h-4" />
-                    Search
+                    <Sparkles className="mr-1 lg:mr-2 w-3 h-3 lg:w-4 lg:h-4" />
+                    <span className="hidden lg:inline">Search</span>
+                    <span className="lg:hidden">Go</span>
                   </Button>
                 </div>
                 <Button 
                   className="sm:hidden bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-medium hover:shadow-lg transition-all w-full"
                   onClick={handleSearch}
+                  disabled={isSearching}
                   data-testid="hero-search-button-mobile"
                 >
                   <Sparkles className="mr-2 w-4 h-4" />
-                  Search AI Deals
+                  {isSearching ? "Searching..." : "Search AI Deals"}
                 </Button>
               </div>
             </div>
@@ -148,8 +189,26 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center mb-12">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="products-title">Trending Deals</h2>
-              <p className="text-xl text-muted-foreground" data-testid="products-subtitle">Hand-picked by our AI for maximum savings</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" data-testid="products-title">
+                {showSearchResults ? `Search Results for "${searchQuery}"` : "Trending Deals"}
+              </h2>
+              <p className="text-xl text-muted-foreground" data-testid="products-subtitle">
+                {showSearchResults ? 
+                  `Found ${searchResultsData.length} product${searchResultsData.length !== 1 ? 's' : ''}` : 
+                  "Hand-picked by our AI for maximum savings"
+                }
+              </p>
+              {showSearchResults && (
+                <Button 
+                  variant="outline" 
+                  onClick={clearSearch}
+                  className="mt-4"
+                  data-testid="clear-search-button"
+                >
+                  <Search className="mr-2 w-4 h-4" />
+                  View All Products
+                </Button>
+              )}
             </div>
             
             {/* Filter Controls */}
@@ -188,10 +247,31 @@ export default function Home() {
           
           {/* Products Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" data-testid="products-grid">
-            {isLoading ? (
+            {(isLoading || isSearching) ? (
               <div className="col-span-full text-center py-12">
-                <div className="text-muted-foreground">Loading featured products...</div>
+                <div className="text-muted-foreground">
+                  {isSearching ? "Searching products..." : "Loading featured products..."}
+                </div>
               </div>
+            ) : showSearchResults ? (
+              searchResultsData.length > 0 ? (
+                searchResultsData.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <div className="text-muted-foreground">
+                    No products found for "{searchQuery}". Try different keywords or browse our featured products below.
+                  </div>
+                  <Button 
+                    onClick={clearSearch}
+                    className="mt-4 bg-primary hover:bg-primary/90 text-white"
+                    data-testid="browse-featured-button"
+                  >
+                    Browse Featured Products
+                  </Button>
+                </div>
+              )
             ) : featuredProducts.length > 0 ? (
               featuredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
