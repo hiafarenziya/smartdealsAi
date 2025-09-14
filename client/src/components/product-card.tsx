@@ -49,8 +49,8 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="product-card bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
-      <div className="relative bg-white">
-        <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 overflow-hidden">
+      <div className="relative bg-background">
+        <div className="aspect-square bg-gradient-to-br from-muted/30 to-muted/60 flex items-center justify-center p-4 overflow-hidden">
           <img 
             src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
             alt={product.title} 
@@ -72,7 +72,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
       
       <div className="p-4 lg:p-5">
-        <h3 className="font-medium text-sm lg:text-base mb-2 line-clamp-2 text-gray-800 leading-tight" data-testid={`product-title-${product.id}`}>
+        <h3 className="font-medium text-sm lg:text-base mb-2 line-clamp-2 text-foreground leading-tight" data-testid={`product-title-${product.id}`}>
           {product.title}
         </h3>
         
@@ -83,7 +83,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
             {product.reviewCount && (
               <span className="text-xs lg:text-sm text-muted-foreground" data-testid={`review-count-${product.id}`}>
-                ({product.reviewCount})
+                ({product.reviewCount} reviews)
               </span>
             )}
           </div>
@@ -91,12 +91,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         
         <div className="flex flex-col gap-1 mb-4">
           {product.discountedPrice && (
-            <span className="text-lg lg:text-xl font-bold text-gray-900" data-testid={`discounted-price-${product.id}`}>
+            <span className="text-lg lg:text-xl font-bold text-foreground" data-testid={`discounted-price-${product.id}`}>
               ₹{parseFloat(product.discountedPrice).toLocaleString('en-IN')}
             </span>
           )}
           {product.originalPrice && product.discountedPrice !== product.originalPrice && (
-            <span className="text-sm lg:text-base text-gray-500 line-through" data-testid={`original-price-${product.id}`}>
+            <span className="text-sm lg:text-base text-muted-foreground line-through" data-testid={`original-price-${product.id}`}>
               ₹{parseFloat(product.originalPrice).toLocaleString('en-IN')}
             </span>
           )}
