@@ -8,13 +8,20 @@ import ProductManagement from "@/components/product-management";
 import { ManageCategoriesPlatforms } from "@/components/manage-categories-platforms";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart3, Plus, Settings, Tags } from "lucide-react";
+import { useAuth } from "@/lib/auth";
 
 export default function Admin() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const [localLoginSuccess, setLocalLoginSuccess] = useState(false);
 
   const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
+    setLocalLoginSuccess(true);
   };
+
+  // Show admin dashboard if user is authenticated OR if they just logged in locally
+  const showAdminDashboard = isAuthenticated || localLoginSuccess;
+  
+  console.log('🏛️ Admin page render - isAuthenticated:', isAuthenticated, 'localLoginSuccess:', localLoginSuccess, 'showAdminDashboard:', showAdminDashboard);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -36,7 +43,7 @@ export default function Admin() {
       <section className="py-8 sm:py-12 lg:py-20">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="max-w-7xl mx-auto">
-            {!isLoggedIn ? (
+            {!showAdminDashboard ? (
               <AdminLogin onLoginSuccess={handleLoginSuccess} />
             ) : (
               <div data-testid="admin-dashboard" className="w-full">

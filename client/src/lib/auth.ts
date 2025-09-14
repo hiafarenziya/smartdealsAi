@@ -158,6 +158,7 @@ class AuthManager {
   }
 
   private clearAuth() {
+    console.log('🧹 clearAuth called - clearing localStorage');
     localStorage.removeItem('admin_auth');
   }
 
