@@ -48,28 +48,31 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="product-card bg-card border border-border rounded-2xl overflow-hidden" data-testid={`product-card-${product.id}`}>
-      <div className="relative">
-        <img 
-          src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300"} 
-          alt={product.title} 
-          className="w-full h-48 object-cover"
-          data-testid={`product-image-${product.id}`}
-        />
+    <div className="product-card bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
+      <div className="relative bg-white">
+        <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4 overflow-hidden">
+          <img 
+            src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
+            alt={product.title} 
+            className="w-full h-full object-contain max-w-[90%] max-h-[90%] group-hover:scale-105 transition-transform duration-300"
+            data-testid={`product-image-${product.id}`}
+            loading="lazy"
+          />
+        </div>
         {product.discountPercentage && (
-          <Badge className="absolute top-4 left-4 bg-gradient-to-r from-accent to-orange-500 text-white border-0" data-testid={`discount-badge-${product.id}`}>
+          <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white border-0 text-xs font-semibold px-2 py-1" data-testid={`discount-badge-${product.id}`}>
             {product.discountPercentage} OFF
           </Badge>
         )}
-        <div className="absolute top-4 right-4 bg-card/80 backdrop-blur-sm rounded-full p-2">
-          <span className="text-lg" data-testid={`platform-icon-${product.id}`}>
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-sm">
+          <span className="text-sm" data-testid={`platform-icon-${product.id}`}>
             {getPlatformIcon(product.platform)}
           </span>
         </div>
       </div>
       
-      <div className="p-6">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2" data-testid={`product-title-${product.id}`}>
+      <div className="p-4 lg:p-5">
+        <h3 className="font-medium text-sm lg:text-base mb-2 line-clamp-2 text-gray-800 leading-tight" data-testid={`product-title-${product.id}`}>
           {product.title}
         </h3>
         
@@ -79,32 +82,32 @@ export default function ProductCard({ product }: ProductCardProps) {
               {renderStars(product.rating)}
             </div>
             {product.reviewCount && (
-              <span className="text-sm text-muted-foreground" data-testid={`review-count-${product.id}`}>
-                ({product.reviewCount} reviews)
+              <span className="text-xs lg:text-sm text-muted-foreground" data-testid={`review-count-${product.id}`}>
+                ({product.reviewCount})
               </span>
             )}
           </div>
         )}
         
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex flex-col gap-1 mb-4">
           {product.discountedPrice && (
-            <span className="text-2xl font-bold text-primary" data-testid={`discounted-price-${product.id}`}>
+            <span className="text-lg lg:text-xl font-bold text-gray-900" data-testid={`discounted-price-${product.id}`}>
               ₹{parseFloat(product.discountedPrice).toLocaleString('en-IN')}
             </span>
           )}
           {product.originalPrice && product.discountedPrice !== product.originalPrice && (
-            <span className="text-lg text-muted-foreground line-through" data-testid={`original-price-${product.id}`}>
+            <span className="text-sm lg:text-base text-gray-500 line-through" data-testid={`original-price-${product.id}`}>
               ₹{parseFloat(product.originalPrice).toLocaleString('en-IN')}
             </span>
           )}
         </div>
         
         <Button 
-          className="w-full bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary text-white py-3 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-300 shadow-sm hover:shadow-md text-sm lg:text-base"
           onClick={handleAffiliateClick}
           data-testid={`view-deal-button-${product.id}`}
         >
-          <ExternalLink className="mr-2 w-4 h-4" />
+          <ExternalLink className="mr-2 w-3 h-3 lg:w-4 lg:h-4" />
           View Deal
         </Button>
       </div>
