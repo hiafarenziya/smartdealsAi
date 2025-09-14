@@ -49,23 +49,19 @@ export default function Admin() {
                   <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-4 sm:mb-6 lg:mb-8 max-w-4xl mx-auto h-auto p-1">
                     <TabsTrigger value="analytics" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm" data-testid="tab-analytics">
                       <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="sm:hidden">Stats</span>
-                      <span className="hidden sm:inline">Analytics</span>
+                      <span>Analytics</span>
                     </TabsTrigger>
                     <TabsTrigger value="add-products" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm" data-testid="tab-add-products">
                       <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="sm:hidden">Add</span>
-                      <span className="hidden sm:inline">Add Product</span>
+                      <span>Add Product</span>
                     </TabsTrigger>
                     <TabsTrigger value="manage-products" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm" data-testid="tab-manage-products">
                       <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="sm:hidden">Manage</span>
-                      <span className="hidden sm:inline">Manage Products</span>
+                      <span>Manage Products</span>
                     </TabsTrigger>
                     <TabsTrigger value="categories-platforms" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm" data-testid="tab-categories-platforms">
                       <Tags className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="sm:hidden text-center leading-tight">Cat/Plat</span>
-                      <span className="hidden sm:inline">Categories & Platforms</span>
+                      <span>Categories & Platforms</span>
                     </TabsTrigger>
                   </TabsList>
                   
