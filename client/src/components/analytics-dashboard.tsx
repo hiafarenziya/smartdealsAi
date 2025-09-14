@@ -226,7 +226,7 @@ export default function AnalyticsDashboard() {
                   />
                   <XAxis 
                     dataKey="shortName" 
-                    stroke="hsl(var(--muted-foreground))" 
+                    stroke="rgba(156, 163, 175, 0.4)" 
                     fontSize={window.innerWidth < 640 ? 11 : 13}
                     tickLine={false}
                     axisLine={false}
@@ -236,22 +236,20 @@ export default function AnalyticsDashboard() {
                     interval={0}
                     tick={{ 
                       fontSize: window.innerWidth < 640 ? 11 : 13,
-                      fill: 'hsl(var(--muted-foreground))',
-                      fillOpacity: 0.6,
-                      fontWeight: 400
+                      fill: 'rgba(156, 163, 175, 0.5)',
+                      fontWeight: 300
                     }}
                   />
                   <YAxis 
-                    stroke="hsl(var(--muted-foreground))" 
+                    stroke="rgba(156, 163, 175, 0.4)" 
                     fontSize={window.innerWidth < 640 ? 11 : 13}
                     tickLine={false}
                     axisLine={false}
                     width={50}
                     tick={{ 
                       fontSize: window.innerWidth < 640 ? 11 : 13,
-                      fill: 'hsl(var(--muted-foreground))',
-                      fillOpacity: 0.6,
-                      fontWeight: 400
+                      fill: 'rgba(156, 163, 175, 0.5)',
+                      fontWeight: 300
                     }}
                   />
                   <Tooltip 
