@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,17 +10,30 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Edit2, Trash2, Package, Star, ExternalLink } from "lucide-react";
+import { Edit2, Trash2, Package, Star, ExternalLink, Search } from "lucide-react";
 import type { Product, InsertProduct } from "@shared/schema";
 
 export default function ProductManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  // Filter products based on search query
+  const filteredProducts = useMemo(() => {
+    if (!products) return [];
+    if (!searchQuery.trim()) return products;
+    
+    return products.filter(product => 
+      product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [products, searchQuery]);
 
   const deleteProductMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -116,85 +129,105 @@ export default function ProductManagement() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h3 className="text-xl sm:text-2xl font-semibold flex items-center">
-            <Package className="text-primary mr-2 sm:mr-3 w-5 h-5 sm:w-6 sm:h-6" />
+          <h3 className="text-lg sm:text-xl font-semibold flex items-center">
+            <Package className="text-primary mr-2 w-4 h-4 sm:w-5 sm:h-5" />
             Manage Products
           </h3>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Edit or remove existing products from the catalog
           </p>
         </div>
-        <Badge variant="secondary" className="text-sm">
-          {products?.length || 0} Products
+        <Badge variant="secondary" className="text-xs sm:text-sm">
+          {filteredProducts.length} of {products?.length || 0} Products
         </Badge>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Input
+          placeholder="Search products by name, platform, or category..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 text-sm"
+          data-testid="input-search-products"
+        />
       </div>
 
       {!products || products.length === 0 ? (
         <Card className="glass-effect border-border">
-          <CardContent className="p-8 text-center">
-            <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-            <h4 className="text-lg font-semibold mb-2">No Products Found</h4>
-            <p className="text-muted-foreground">Add some products to get started with product management.</p>
+          <CardContent className="p-6 text-center">
+            <Package className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+            <h4 className="text-base font-semibold mb-2">No Products Found</h4>
+            <p className="text-sm text-muted-foreground">Add some products to get started with product management.</p>
+          </CardContent>
+        </Card>
+      ) : filteredProducts.length === 0 ? (
+        <Card className="glass-effect border-border">
+          <CardContent className="p-6 text-center">
+            <Search className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
+            <h4 className="text-base font-semibold mb-2">No Products Match Your Search</h4>
+            <p className="text-sm text-muted-foreground">Try adjusting your search terms or clear the search to see all products.</p>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4">
-          {products.map((product) => (
+        <div className="grid gap-2 sm:gap-3">
+          {filteredProducts.map((product) => (
             <Card key={product.id} className="glass-effect border-border">
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex flex-col sm:flex-row gap-4">
+              <CardContent className="p-2 sm:p-3">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   {/* Product Image */}
                   <div className="flex-shrink-0">
                     {product.imageUrl ? (
                       <img 
                         src={product.imageUrl} 
                         alt={product.title}
-                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover bg-muted"
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-md object-cover bg-muted"
                       />
                     ) : (
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-muted flex items-center justify-center">
-                        <Package className="w-6 h-6 text-muted-foreground" />
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-md bg-muted flex items-center justify-center">
+                        <Package className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                       </div>
                     )}
                   </div>
 
                   {/* Product Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm sm:text-base lg:text-lg line-clamp-2 mb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium text-xs sm:text-sm line-clamp-1 mb-1">
                           {product.title}
                         </h4>
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <Badge variant="outline" className="text-xs">
+                        <div className="flex flex-wrap items-center gap-1 mb-1">
+                          <Badge variant="outline" className="text-xs px-1.5 py-0.5">
                             {product.platform}
                           </Badge>
                           {product.category && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
                               {product.category}
                             </Badge>
                           )}
                           {product.featured && (
-                            <Badge variant="default" className="text-xs">
-                              <Star className="w-3 h-3 mr-1" />
+                            <Badge variant="default" className="text-xs px-1.5 py-0.5">
+                              <Star className="w-2 h-2 mr-1" />
                               Featured
                             </Badge>
                           )}
                         </div>
                         
                         {/* Pricing */}
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <div className="flex items-center gap-1 mb-1 flex-wrap">
                           {product.discountedPrice && (
-                            <span className="font-semibold text-primary text-sm sm:text-base">₹{product.discountedPrice}</span>
+                            <span className="font-medium text-primary text-xs sm:text-sm">₹{product.discountedPrice}</span>
                           )}
                           {product.originalPrice && product.discountedPrice && (
-                            <span className="text-xs sm:text-sm text-muted-foreground line-through">₹{product.originalPrice}</span>
+                            <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice}</span>
                           )}
                           {product.discountPercentage && (
-                            <Badge variant="destructive" className="text-xs">
+                            <Badge variant="destructive" className="text-xs px-1 py-0.5">
                               {product.discountPercentage}% OFF
                             </Badge>
                           )}
@@ -202,26 +235,26 @@ export default function ProductManagement() {
 
                         {/* Rating */}
                         {product.rating && (
-                          <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
-                            <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                             <span>{product.rating}</span>
                             {product.reviewCount && (
-                              <span className="hidden sm:inline">({product.reviewCount} reviews)</span>
+                              <span className="hidden sm:inline">({product.reviewCount})</span>
                             )}
                           </div>
                         )}
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex gap-1 sm:gap-2 mt-2 sm:mt-0">
+                      <div className="flex gap-1 mt-1 sm:mt-0 self-start">
                         {product.affiliateLink && (
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => window.open(product.affiliateLink, '_blank')}
-                            className="p-2"
+                            className="h-7 w-7 p-0"
                           >
-                            <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <ExternalLink className="w-3 h-3" />
                           </Button>
                         )}
                         
@@ -229,16 +262,16 @@ export default function ProductManagement() {
                           variant="outline" 
                           size="sm"
                           onClick={() => handleEditProduct(product)}
-                          className="p-2"
+                          className="h-7 w-7 p-0"
                           data-testid={`button-edit-${product.id}`}
                         >
-                          <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <Edit2 className="w-3 h-3" />
                         </Button>
 
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm" className="p-2">
-                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <Button variant="destructive" size="sm" className="h-7 w-7 p-0">
+                              <Trash2 className="w-3 h-3" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
