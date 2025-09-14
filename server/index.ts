@@ -6,6 +6,35 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Security headers for safe external image loading
+app.use((req, res, next) => {
+  // Content Security Policy - Allow external images via HTTPS only
+  res.setHeader('Content-Security-Policy', 
+    "default-src 'self'; " +
+    "img-src 'self' https: data:; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "connect-src 'self' https: ws: wss:; " +
+    "font-src 'self' data: https:; " +
+    "object-src 'none'; " +
+    "base-uri 'self'; " +
+    "frame-ancestors 'none';"
+  );
+  
+  // Prevent referrer information leakage when loading external images
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  
+  // Prevent MIME type sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Minimal permissions policy
+  res.setHeader('Permissions-Policy', 
+    'camera=(), microphone=(), geolocation=(), payment=()'
+  );
+  
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
