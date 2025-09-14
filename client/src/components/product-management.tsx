@@ -190,7 +190,7 @@ export default function ProductManagement() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-2 sm:gap-3">
+        <div className="grid gap-2 sm:gap-3 max-w-4xl mx-auto px-4 sm:px-6">
           {filteredProducts.map((product) => (
             <Card key={product.id} className="glass-effect border-border">
               <CardContent className="p-2 sm:p-3">
