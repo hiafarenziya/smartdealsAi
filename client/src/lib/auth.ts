@@ -22,16 +22,19 @@ class AuthManager {
 
   constructor() {
     // Check for existing session on initialization
-    this.checkAuthStatus();
+    // Use setTimeout to ensure localStorage is available
+    setTimeout(() => {
+      this.checkAuthStatus();
+    }, 0);
   }
 
-  private checkAuthStatus() {
-    // Check localStorage for auth state
-    const storedAuth = localStorage.getItem('admin_auth');
-    if (storedAuth) {
-      try {
+  checkAuthStatus() {
+    try {
+      // Check localStorage for auth state
+      const storedAuth = localStorage.getItem('admin_auth');
+      if (storedAuth) {
         const parsed = JSON.parse(storedAuth);
-        if (parsed.isAuthenticated && parsed.timestamp) {
+        if (parsed.isAuthenticated && parsed.timestamp && parsed.user) {
           // Check if the auth is still valid (24 hours)
           const now = Date.now();
           const authTime = parsed.timestamp;
@@ -42,16 +45,21 @@ class AuthManager {
               isAuthenticated: true,
               user: parsed.user,
             };
+            console.log('Auth restored from localStorage:', this.authState);
             this.notifyListeners();
           } else {
             // Clear expired auth
+            console.log('Auth expired, clearing...');
             this.clearAuth();
           }
+        } else {
+          // Invalid auth data structure
+          this.clearAuth();
         }
-      } catch (error) {
-        console.error('Error parsing stored auth:', error);
-        this.clearAuth();
       }
+    } catch (error) {
+      console.error('Error parsing stored auth:', error);
+      this.clearAuth();
     }
   }
 
@@ -123,7 +131,7 @@ class AuthManager {
 
   // Utility method to check if user has admin privileges
   hasAdminAccess(): boolean {
-    return this.authState.isAuthenticated && this.authState.user?.username === 'admin';
+    return this.authState.isAuthenticated && this.authState.user?.username === 'afarenziya@gmail.com';
   }
 
   // Method to refresh auth status (useful for checking session validity)
@@ -164,6 +172,9 @@ export function useAuth() {
   const [authState, setAuthState] = useState(authManager.getAuthState());
 
   useEffect(() => {
+    // Re-check auth status when component mounts
+    authManager.checkAuthStatus();
+    
     const unsubscribe = authManager.subscribe(setAuthState);
     return unsubscribe;
   }, []);
