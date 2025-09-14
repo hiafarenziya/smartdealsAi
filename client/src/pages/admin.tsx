@@ -5,8 +5,9 @@ import AdminLogin from "@/components/admin-login";
 import AddProductForm from "@/components/add-product-form";
 import AnalyticsDashboard from "@/components/analytics-dashboard";
 import ProductManagement from "@/components/product-management";
+import { ManageCategoriesPlatforms } from "@/components/manage-categories-platforms";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Plus, Settings } from "lucide-react";
+import { BarChart3, Plus, Settings, Tags } from "lucide-react";
 
 export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,7 +46,7 @@ export default function Admin() {
                 </div>
                 
                 <Tabs defaultValue="analytics" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 mb-6 sm:mb-8 max-w-lg mx-auto">
+                  <TabsList className="grid w-full grid-cols-4 mb-6 sm:mb-8 max-w-2xl mx-auto">
                     <TabsTrigger value="analytics" className="flex items-center gap-2" data-testid="tab-analytics">
                       <BarChart3 className="w-4 h-4" />
                       <span className="hidden sm:inline">Analytics</span>
@@ -61,6 +62,11 @@ export default function Admin() {
                       <span className="hidden sm:inline">Manage Products</span>
                       <span className="sm:hidden">Manage</span>
                     </TabsTrigger>
+                    <TabsTrigger value="categories-platforms" className="flex items-center gap-2" data-testid="tab-categories-platforms">
+                      <Tags className="w-4 h-4" />
+                      <span className="hidden sm:inline">Categories & Platforms</span>
+                      <span className="sm:hidden">Cat/Plat</span>
+                    </TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="analytics" className="mt-0" data-testid="analytics-tab-content">
@@ -73,6 +79,10 @@ export default function Admin() {
                   
                   <TabsContent value="manage-products" className="mt-0" data-testid="manage-products-tab-content">
                     <ProductManagement />
+                  </TabsContent>
+                  
+                  <TabsContent value="categories-platforms" className="mt-0" data-testid="categories-platforms-tab-content">
+                    <ManageCategoriesPlatforms />
                   </TabsContent>
                 </Tabs>
               </div>
