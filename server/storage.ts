@@ -13,6 +13,15 @@ export interface IStorage {
   getProductsByPlatform(platform: string): Promise<Product[]>;
   getProductsByCategory(category: string): Promise<Product[]>;
   searchProducts(query: string): Promise<Product[]>;
+  getProductsWithFilters(filters: {
+    platform?: string;
+    category?: string;
+    search?: string;
+    featured?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: 'price_low' | 'price_high' | 'rating' | 'newest' | 'popular';
+  }): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: string, product: Partial<InsertProduct>): Promise<Product | undefined>;
   deleteProduct(id: string): Promise<boolean>;
@@ -167,6 +176,93 @@ export class MemStorage implements IStorage {
       product.category?.toLowerCase().includes(searchTerm) ||
       product.platform.toLowerCase().includes(searchTerm)
     );
+  }
+
+  async getProductsWithFilters(filters: {
+    platform?: string;
+    category?: string;
+    search?: string;
+    featured?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: 'price_low' | 'price_high' | 'rating' | 'newest' | 'popular';
+  }): Promise<Product[]> {
+    let products = Array.from(this.products.values());
+
+    // Apply filters
+    if (filters.platform) {
+      products = products.filter(p => p.platform.toLowerCase() === filters.platform!.toLowerCase());
+    }
+
+    if (filters.category) {
+      products = products.filter(p => p.category?.toLowerCase() === filters.category!.toLowerCase());
+    }
+
+    if (filters.featured !== undefined) {
+      products = products.filter(p => p.featured === filters.featured);
+    }
+
+    if (filters.search) {
+      const searchTerm = filters.search.toLowerCase();
+      products = products.filter(product =>
+        product.title.toLowerCase().includes(searchTerm) ||
+        product.description?.toLowerCase().includes(searchTerm) ||
+        product.category?.toLowerCase().includes(searchTerm) ||
+        product.platform.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    // Price filtering
+    if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+      products = products.filter(product => {
+        const price = parseFloat(product.discountedPrice || product.originalPrice || "0");
+        if (filters.minPrice !== undefined && price < filters.minPrice) return false;
+        if (filters.maxPrice !== undefined && price > filters.maxPrice) return false;
+        return true;
+      });
+    }
+
+    // Sorting
+    if (filters.sortBy) {
+      switch (filters.sortBy) {
+        case 'price_low':
+          products.sort((a, b) => {
+            const priceA = parseFloat(a.discountedPrice || a.originalPrice || "0");
+            const priceB = parseFloat(b.discountedPrice || b.originalPrice || "0");
+            return priceA - priceB;
+          });
+          break;
+        case 'price_high':
+          products.sort((a, b) => {
+            const priceA = parseFloat(a.discountedPrice || a.originalPrice || "0");
+            const priceB = parseFloat(b.discountedPrice || b.originalPrice || "0");
+            return priceB - priceA;
+          });
+          break;
+        case 'rating':
+          products.sort((a, b) => {
+            const ratingA = parseFloat(a.rating || "0");
+            const ratingB = parseFloat(b.rating || "0");
+            return ratingB - ratingA;
+          });
+          break;
+        case 'popular':
+          products.sort((a, b) => {
+            const reviewsA = parseInt(a.reviewCount || "0");
+            const reviewsB = parseInt(b.reviewCount || "0");
+            return reviewsB - reviewsA;
+          });
+          break;
+        case 'newest':
+        default:
+          products.sort((a, b) => 
+            new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+          );
+          break;
+      }
+    }
+
+    return products;
   }
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {

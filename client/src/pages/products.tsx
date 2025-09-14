@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "use-debounce";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ProductCard from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Grid, List } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
+import { Search, Filter, Grid, List, SlidersHorizontal, X } from "lucide-react";
 import type { Product } from "@shared/schema";
 
 export default function Products() {
@@ -14,20 +18,47 @@ export default function Products() {
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState<string>("newest");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Debounce search query to prevent excessive API calls
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
+
+  const queryParams = useMemo(() => {
+    const params: Record<string, any> = {};
+    
+    if (debouncedSearchQuery) params.search = debouncedSearchQuery;
+    if (selectedPlatform) params.platform = selectedPlatform;
+    if (selectedCategory) params.category = selectedCategory;
+    if (sortBy) params.sortBy = sortBy;
+    if (priceRange[0] > 0) params.minPrice = priceRange[0];
+    if (priceRange[1] < 100000) params.maxPrice = priceRange[1];
+    
+    return params;
+  }, [debouncedSearchQuery, selectedPlatform, selectedCategory, sortBy, priceRange]);
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
-    queryKey: ["/api/products", { platform: selectedPlatform, category: selectedCategory, search: searchQuery }],
+    queryKey: ["/api/products", queryParams],
   });
-
-  const handleSearch = () => {
-    // Search is handled by the query key dependencies
-  };
 
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedPlatform("");
     setSelectedCategory("");
+    setSortBy("");
+    setPriceRange([0, 100000]);
   };
+
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (searchQuery) count++;
+    if (selectedPlatform) count++;
+    if (selectedCategory) count++;
+    if (sortBy) count++;
+    if (priceRange[0] > 0 || priceRange[1] < 100000) count++;
+    return count;
+  }, [searchQuery, selectedPlatform, selectedCategory, sortBy, priceRange]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -46,59 +77,66 @@ export default function Products() {
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 bg-card/30 border-b border-border">
+      <section className="py-6 bg-card/30 border-b border-border">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
+          {/* Main Search and Quick Actions */}
+          <div className="flex flex-col lg:flex-row gap-4 items-center mb-4">
             {/* Search Bar */}
-            <div className="flex-1 max-w-md">
+            <div className="flex-1 max-w-lg">
               <div className="relative">
                 <Input
                   type="text" 
-                  placeholder="Search products..."
-                  className="w-full pl-10 bg-background border-border"
+                  placeholder="Search products, brands, categories..."
+                  className="w-full pl-10 pr-4 py-3 bg-background border-border rounded-xl text-base"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   data-testid="search-input"
                 />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                {searchQuery && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 h-6 w-6"
+                    data-testid="clear-search"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-4 items-center">
-              <Select value={selectedPlatform || "all"} onValueChange={(value) => setSelectedPlatform(value === "all" ? "" : value)} data-testid="filter-platform">
-                <SelectTrigger className="w-40 bg-background border-border">
-                  <SelectValue placeholder="Platform" />
+            {/* Quick Actions */}
+            <div className="flex flex-wrap gap-3 items-center">
+              {/* Sort Dropdown */}
+              <Select value={sortBy || "newest"} onValueChange={setSortBy} data-testid="sort-select">
+                <SelectTrigger className="w-44 bg-background border-border">
+                  <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Platforms</SelectItem>
-                  <SelectItem value="Amazon">Amazon</SelectItem>
-                  <SelectItem value="Flipkart">Flipkart</SelectItem>
-                  <SelectItem value="Myntra">Myntra</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              <Select value={selectedCategory || "all"} onValueChange={(value) => setSelectedCategory(value === "all" ? "" : value)} data-testid="filter-category">
-                <SelectTrigger className="w-40 bg-background border-border">
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="Electronics">Electronics</SelectItem>
-                  <SelectItem value="Fashion">Fashion</SelectItem>
-                  <SelectItem value="Home & Garden">Home & Garden</SelectItem>
-                  <SelectItem value="Books">Books</SelectItem>
-                  <SelectItem value="Sports">Sports</SelectItem>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="popular">Most Popular</SelectItem>
+                  <SelectItem value="rating">Highest Rated</SelectItem>
+                  <SelectItem value="price_low">Price: Low to High</SelectItem>
+                  <SelectItem value="price_high">Price: High to Low</SelectItem>
                 </SelectContent>
               </Select>
 
+              {/* Advanced Filters Toggle */}
               <Button 
                 variant="outline" 
-                onClick={clearFilters}
-                className="border-border"
-                data-testid="clear-filters-button"
+                onClick={() => setShowFilters(!showFilters)}
+                className="border-border relative"
+                data-testid="toggle-filters"
               >
-                Clear Filters
+                <SlidersHorizontal className="w-4 h-4 mr-2" />
+                Filters
+                {activeFiltersCount > 0 && (
+                  <Badge variant="destructive" className="ml-2 px-1.5 py-0.5 text-xs min-w-[20px] h-5">
+                    {activeFiltersCount}
+                  </Badge>
+                )}
               </Button>
 
               {/* View Mode Toggle */}
@@ -107,7 +145,7 @@ export default function Products() {
                   variant={viewMode === "grid" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setViewMode("grid")}
-                  className="rounded-none"
+                  className="rounded-none px-3"
                   data-testid="view-grid-button"
                 >
                   <Grid className="w-4 h-4" />
@@ -116,7 +154,7 @@ export default function Products() {
                   variant={viewMode === "list" ? "default" : "ghost"}
                   size="sm"
                   onClick={() => setViewMode("list")}
-                  className="rounded-none"
+                  className="rounded-none px-3"
                   data-testid="view-list-button"
                 >
                   <List className="w-4 h-4" />
@@ -124,6 +162,117 @@ export default function Products() {
               </div>
             </div>
           </div>
+
+          {/* Advanced Filters Panel */}
+          {showFilters && (
+            <Card className="mt-4 border-border bg-card/50">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center justify-between">
+                  <span className="flex items-center">
+                    <Filter className="w-5 h-5 mr-2" />
+                    Advanced Filters
+                  </span>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={clearFilters}
+                    className="text-sm"
+                    data-testid="clear-all-filters"
+                  >
+                    Clear All
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* Platform Filter */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium">Platform</label>
+                    <Select value={selectedPlatform || "all"} onValueChange={(value) => setSelectedPlatform(value === "all" ? "" : value)} data-testid="filter-platform">
+                      <SelectTrigger className="bg-background border-border">
+                        <SelectValue placeholder="All Platforms" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Platforms</SelectItem>
+                        <SelectItem value="Amazon">🛒 Amazon</SelectItem>
+                        <SelectItem value="Flipkart">🛍️ Flipkart</SelectItem>
+                        <SelectItem value="Myntra">👕 Myntra</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Category Filter */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium">Category</label>
+                    <Select value={selectedCategory || "all"} onValueChange={(value) => setSelectedCategory(value === "all" ? "" : value)} data-testid="filter-category">
+                      <SelectTrigger className="bg-background border-border">
+                        <SelectValue placeholder="All Categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        <SelectItem value="Electronics">📱 Electronics</SelectItem>
+                        <SelectItem value="Fashion">👗 Fashion</SelectItem>
+                        <SelectItem value="Home & Garden">🏠 Home & Garden</SelectItem>
+                        <SelectItem value="Books">📚 Books</SelectItem>
+                        <SelectItem value="Sports">⚽ Sports</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Price Range */}
+                  <div className="md:col-span-2 space-y-3">
+                    <label className="text-sm font-medium">Price Range</label>
+                    <div className="px-4">
+                      <Slider
+                        value={priceRange}
+                        onValueChange={(value) => setPriceRange([value[0], value[1]])}
+                        max={100000}
+                        min={0}
+                        step={500}
+                        className="w-full"
+                        data-testid="price-range-slider"
+                      />
+                      <div className="flex justify-between mt-2 text-sm text-muted-foreground">
+                        <span>₹{priceRange[0].toLocaleString()}</span>
+                        <span>₹{priceRange[1].toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Active Filters Display */}
+                {activeFiltersCount > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-4 border-t border-border">
+                    <span className="text-sm font-medium text-muted-foreground mr-2">Active filters:</span>
+                    {searchQuery && (
+                      <Badge variant="secondary" className="flex items-center gap-1" data-testid="active-filter-search">
+                        Search: "{searchQuery}"
+                        <X className="w-3 h-3 cursor-pointer" onClick={() => setSearchQuery("")} />
+                      </Badge>
+                    )}
+                    {selectedPlatform && (
+                      <Badge variant="secondary" className="flex items-center gap-1" data-testid="active-filter-platform">
+                        Platform: {selectedPlatform}
+                        <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedPlatform("")} />
+                      </Badge>
+                    )}
+                    {selectedCategory && (
+                      <Badge variant="secondary" className="flex items-center gap-1" data-testid="active-filter-category">
+                        Category: {selectedCategory}
+                        <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedCategory("")} />
+                      </Badge>
+                    )}
+                    {(priceRange[0] > 0 || priceRange[1] < 100000) && (
+                      <Badge variant="secondary" className="flex items-center gap-1" data-testid="active-filter-price">
+                        Price: ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
+                        <X className="w-3 h-3 cursor-pointer" onClick={() => setPriceRange([0, 100000])} />
+                      </Badge>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </section>
 

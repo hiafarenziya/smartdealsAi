@@ -15,26 +15,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Products routes
   app.get("/api/products", async (req, res) => {
     try {
-      const { platform, category, search, featured } = req.query;
+      const { platform, category, search, featured, minPrice, maxPrice, sortBy } = req.query;
       
-      let products = await storage.getAllProducts();
-      
-      if (platform) {
-        products = await storage.getProductsByPlatform(platform as string);
+      // If no filters provided, get all products
+      if (!platform && !category && !search && !featured && !minPrice && !maxPrice && !sortBy) {
+        const products = await storage.getAllProducts();
+        return res.json(products);
       }
       
-      if (category) {
-        products = await storage.getProductsByCategory(category as string);
-      }
+      // Use the enhanced filtering system
+      const filters = {
+        platform: platform as string,
+        category: category as string,
+        search: search as string,
+        featured: featured === 'true' ? true : featured === 'false' ? false : undefined,
+        minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
+        maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
+        sortBy: sortBy as 'price_low' | 'price_high' | 'rating' | 'newest' | 'popular'
+      };
       
-      if (search) {
-        products = await storage.searchProducts(search as string);
-      }
-      
-      if (featured === 'true') {
-        products = await storage.getFeaturedProducts();
-      }
-      
+      const products = await storage.getProductsWithFilters(filters);
       res.json(products);
     } catch (error) {
       console.error("Error fetching products:", error);
