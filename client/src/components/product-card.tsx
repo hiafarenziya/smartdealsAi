@@ -70,11 +70,11 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
     return (
       <div className="product-card bg-card border border-border rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 group flex items-stretch" data-testid={`product-card-${product.id}`}>
         {/* Left: Product Image - Full Height Down to Up */}
-        <div className="w-28 md:w-32 flex-shrink-0 bg-muted/20 dark:bg-muted/10 p-1">
+        <div className="w-28 md:w-32 flex-shrink-0 bg-muted/20 dark:bg-muted/10">
           <img 
             src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
             alt={product.title} 
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 rounded-md"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             data-testid={`product-image-${product.id}`}
             loading="lazy"
           />
