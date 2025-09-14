@@ -21,6 +21,7 @@ export default function ProductManagement() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedPlatform, setSelectedPlatform] = useState<string>("");
+  const [selectedFeatured, setSelectedFeatured] = useState<string>("");
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
@@ -53,19 +54,25 @@ export default function ProductManagement() {
       // Platform filter  
       const matchesPlatform = !selectedPlatform || selectedPlatform === 'all' || product.platform === selectedPlatform;
       
-      return matchesSearch && matchesCategory && matchesPlatform;
+      // Featured filter
+      const matchesFeatured = !selectedFeatured || selectedFeatured === 'all' || 
+        (selectedFeatured === 'featured' && product.featured) ||
+        (selectedFeatured === 'not-featured' && !product.featured);
+      
+      return matchesSearch && matchesCategory && matchesPlatform && matchesFeatured;
     });
-  }, [products, searchQuery, selectedCategory, selectedPlatform]);
+  }, [products, searchQuery, selectedCategory, selectedPlatform, selectedFeatured]);
 
   // Clear all filters
   const clearAllFilters = () => {
     setSearchQuery("");
     setSelectedCategory("all");
     setSelectedPlatform("all");
+    setSelectedFeatured("all");
   };
 
   // Check if any filters are active
-  const hasActiveFilters = searchQuery.trim() || (selectedCategory && selectedCategory !== 'all') || (selectedPlatform && selectedPlatform !== 'all');
+  const hasActiveFilters = searchQuery.trim() || (selectedCategory && selectedCategory !== 'all') || (selectedPlatform && selectedPlatform !== 'all') || (selectedFeatured && selectedFeatured !== 'all');
 
   const deleteProductMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -243,6 +250,20 @@ export default function ProductManagement() {
                       {platform.name}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Featured Filter */}
+            <div className="min-w-[150px] flex-1 sm:flex-initial">
+              <Select value={selectedFeatured || 'all'} onValueChange={setSelectedFeatured}>
+                <SelectTrigger className="text-sm h-9">
+                  <SelectValue placeholder="All Products" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Products</SelectItem>
+                  <SelectItem value="featured">Featured Only</SelectItem>
+                  <SelectItem value="not-featured">Non-Featured</SelectItem>
                 </SelectContent>
               </Select>
             </div>
