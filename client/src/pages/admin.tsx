@@ -7,15 +7,21 @@ import AnalyticsDashboard from "@/components/analytics-dashboard";
 import ProductManagement from "@/components/product-management";
 import { ManageCategoriesPlatforms } from "@/components/manage-categories-platforms";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BarChart3, Plus, Settings, Tags } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BarChart3, Plus, Settings, Tags, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 export default function Admin() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [localLoginSuccess, setLocalLoginSuccess] = useState(false);
 
   const handleLoginSuccess = () => {
     setLocalLoginSuccess(true);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setLocalLoginSuccess(false);
   };
 
   // Show admin dashboard if user is authenticated OR if they just logged in locally
@@ -47,9 +53,23 @@ export default function Admin() {
               <AdminLogin onLoginSuccess={handleLoginSuccess} />
             ) : (
               <div data-testid="admin-dashboard" className="w-full">
-                <div className="mb-4 sm:mb-6 lg:mb-8 text-center">
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-green-500 mb-2">✓ Admin Access Granted</h2>
-                  <p className="text-xs sm:text-sm lg:text-base text-muted-foreground">Welcome to the Smart Deals AI admin dashboard</p>
+                <div className="mb-4 sm:mb-6 lg:mb-8">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="text-center flex-1">
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold text-green-500 mb-2">✓ Admin Access Granted</h2>
+                      <p className="text-xs sm:text-sm lg:text-base text-muted-foreground">Welcome to the Smart Deals AI admin dashboard</p>
+                    </div>
+                    <Button
+                      onClick={handleLogout}
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2 text-red-600 border-red-600 hover:bg-red-600 hover:text-white transition-colors"
+                      data-testid="logout-button"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Logout
+                    </Button>
+                  </div>
                 </div>
                 
                 <Tabs defaultValue="analytics" className="w-full">
