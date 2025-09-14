@@ -99,6 +99,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Analytics endpoints
+  app.get("/api/analytics/overview", async (req, res) => {
+    try {
+      const products = await storage.getProducts({});
+      
+      const totalProducts = products.length;
+      const featuredProducts = products.filter(p => p.featured).length;
+      const avgDiscount = products
+        .filter(p => p.originalPrice && p.discountedPrice)
+        .reduce((sum, p) => sum + ((p.originalPrice! - p.discountedPrice!) / p.originalPrice!) * 100, 0) / 
+        products.filter(p => p.originalPrice && p.discountedPrice).length || 0;
+      
+      const platformStats = products.reduce((acc, product) => {
+        acc[product.platform] = (acc[product.platform] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const categoryStats = products.reduce((acc, product) => {
+        if (product.category) {
+          acc[product.category] = (acc[product.category] || 0) + 1;
+        }
+        return acc;
+      }, {} as Record<string, number>);
+      
+      res.json({
+        totalProducts,
+        featuredProducts,
+        averageDiscount: Math.round(avgDiscount * 100) / 100,
+        platformDistribution: Object.entries(platformStats).map(([name, value]) => ({ name, value })),
+        categoryDistribution: Object.entries(categoryStats).map(([name, value]) => ({ name, value })),
+        recentlyAdded: products.slice(-5).reverse()
+      });
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics data" });
+    }
+  });
+
   // Admin authentication
   app.post("/api/admin/login", async (req, res) => {
     try {
