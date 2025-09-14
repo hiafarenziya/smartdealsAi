@@ -64,72 +64,56 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
   };
 
   if (viewMode === "list") {
+    // Single amount display - use discounted price if available, otherwise original price
+    const amount = product.discountedPrice || product.originalPrice;
+    
     return (
-      <div className="product-card bg-card border border-border rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
-        <div className="flex p-3 gap-3">
-          {/* Left: Product Image */}
-          <div className="flex-shrink-0">
-            <div className="w-20 h-20 bg-background/80 dark:bg-muted/20 flex items-center justify-center overflow-hidden rounded-lg relative">
-              <img 
-                src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
-                alt={product.title} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 rounded-md"
-                data-testid={`product-image-${product.id}`}
-                loading="lazy"
-              />
-            </div>
+      <div className="product-card bg-card border border-border rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 group flex items-stretch" data-testid={`product-card-${product.id}`}>
+        {/* Left: Product Image - Full Height */}
+        <div className="w-28 md:w-32 flex-shrink-0">
+          <div className="h-full bg-muted/20 dark:bg-muted/10 flex items-center justify-center p-2">
+            <img 
+              src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
+              alt={product.title} 
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 rounded-md"
+              data-testid={`product-image-${product.id}`}
+              loading="lazy"
+            />
           </div>
-          
-          {/* Right: Product Details */}
-          <div className="flex-1 flex flex-col justify-between min-w-0">
-            {/* Title and Rating */}
-            <div className="space-y-1.5">
-              <h3 className="font-medium text-sm line-clamp-2 text-foreground leading-tight" data-testid={`product-title-${product.id}`}>
-                {product.title}
-              </h3>
-              
-              {product.rating && (
-                <div className="flex items-center gap-1">
-                  <div className="flex" data-testid={`product-rating-${product.id}`}>
-                    {renderStars(product.rating)}
-                  </div>
-                  {product.reviewCount && (
-                    <span className="text-[10px] text-muted-foreground" data-testid={`review-count-${product.id}`}>
-                      ({product.reviewCount})
-                    </span>
-                  )}
-                  {product.discountPercentage && (
-                    <Badge className="ml-2 bg-green-600 text-white border-0 text-xs font-semibold px-1.5 py-0.5 rounded" data-testid={`discount-badge-${product.id}`}>
-                      {product.discountPercentage} OFF
-                    </Badge>
-                  )}
+        </div>
+        
+        {/* Right: Product Details */}
+        <div className="flex-1 flex flex-col justify-between p-3 min-w-0">
+          <div className="space-y-2">
+            {/* Title */}
+            <h3 className="font-medium text-sm line-clamp-2 text-foreground leading-tight" data-testid={`product-title-${product.id}`}>
+              {product.title}
+            </h3>
+            
+            {/* Rating Section */}
+            {product.rating && (
+              <div className="flex items-center gap-1">
+                <div className="flex" data-testid={`product-rating-${product.id}`}>
+                  {renderStars(product.rating)}
                 </div>
-              )}
-            </div>
+                {product.reviewCount && (
+                  <span className="text-[10px] text-muted-foreground" data-testid={`review-count-${product.id}`}>
+                    ({product.reviewCount})
+                  </span>
+                )}
+              </div>
+            )}
             
-            {/* Prices */}
-            <div className="flex items-center gap-2 mt-2">
-              {product.discountedPrice && (
-                <span className="text-lg font-bold text-foreground" data-testid={`discounted-price-${product.id}`}>
-                  ₹{parseFloat(product.discountedPrice).toLocaleString('en-IN')}
-                </span>
-              )}
-              {product.originalPrice && product.discountedPrice !== product.originalPrice && (
-                <span className="text-sm text-muted-foreground line-through" data-testid={`original-price-${product.id}`}>
-                  ₹{parseFloat(product.originalPrice).toLocaleString('en-IN')}
-                </span>
-              )}
-            </div>
-            
-            {/* Express Delivery & Warranty info */}
-            <div className="text-xs text-muted-foreground mt-1 space-y-0.5">
-              <div>📦 EXPRESS Delivery tomorrow</div>
-              <div>🛡️ 1 year warranty by APPLE</div>
-            </div>
+            {/* Amount */}
+            {amount && (
+              <div className="text-lg font-bold text-foreground" data-testid={`product-price-${product.id}`}>
+                ₹{parseFloat(amount).toLocaleString('en-IN')}
+              </div>
+            )}
           </div>
           
-          {/* Right: Action Button */}
-          <div className="flex-shrink-0 self-center">
+          {/* Action Button */}
+          <div className="flex justify-end mt-2">
             <Button 
               size="sm"
               className={`${getPlatformButtonStyle(product.platform)} h-8 px-3 rounded-md text-xs font-medium shadow-sm hover:shadow-md`}
