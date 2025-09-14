@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -19,6 +20,7 @@ interface LoginData {
 
 export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   const { toast } = useToast();
+  const { login } = useAuth();
   
   const form = useForm<LoginData>({
     defaultValues: {
@@ -29,25 +31,36 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
-      return await apiRequest("POST", "/api/admin/login", data);
+      console.log('🔐 AdminLogin: Starting login process...');
+      const result = await login(data);
+      console.log('🔐 AdminLogin: Login result:', result);
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Login failed');
+      }
+      
+      return result;
     },
     onSuccess: () => {
+      console.log('🔐 AdminLogin: Login successful!');
       toast({
         title: "Login Successful",
         description: "Welcome to the admin panel!",
       });
       onLoginSuccess();
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.log('🔐 AdminLogin: Login failed:', error);
       toast({
         title: "Login Failed",
-        description: "Invalid username or password. Please try again.",
+        description: error.message || "Invalid username or password. Please try again.",
         variant: "destructive",
       });
     },
   });
 
   const onSubmit = (data: LoginData) => {
+    console.log('🔐 AdminLogin: Form submitted with data:', { username: data.username, password: '[HIDDEN]' });
     loginMutation.mutate(data);
   };
 

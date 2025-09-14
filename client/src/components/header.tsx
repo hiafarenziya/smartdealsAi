@@ -7,6 +7,9 @@ import { useAuth } from "@/lib/auth";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated } = useAuth();
+  
+  // Debug authentication state
+  console.log('📱 Header render - isAuthenticated:', isAuthenticated);
 
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-border">
