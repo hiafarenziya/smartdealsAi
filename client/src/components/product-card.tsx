@@ -75,9 +75,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="product-card bg-white dark:bg-card border border-gray-200 dark:border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
-      <div className="relative bg-gray-50 dark:bg-background">
-        <div className="aspect-[4/3] md:aspect-square bg-white dark:bg-gray-50/30 flex items-center justify-center p-2 md:p-3 overflow-hidden">
+    <div className="product-card bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
+      <div className="relative bg-muted/50">
+        <div className="aspect-[4/3] md:aspect-square bg-background flex items-center justify-center p-2 md:p-3 overflow-hidden">
           <img 
             src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
             alt={product.title} 
@@ -91,7 +91,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.discountPercentage} OFF
           </Badge>
         )}
-        <div className="absolute top-1.5 right-1.5 bg-white dark:bg-gray-100 rounded-full p-1 shadow-sm">
+        <div className="absolute top-1.5 right-1.5 bg-card/80 backdrop-blur-sm rounded-full p-1 shadow-sm">
           <span className="text-xs" data-testid={`platform-icon-${product.id}`}>
             {getPlatformIcon(product.platform)}
           </span>
@@ -99,7 +99,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
       
       <div className="p-2 md:p-3">
-        <h3 className="font-normal text-xs md:text-sm mb-1.5 line-clamp-2 text-gray-800 dark:text-foreground leading-tight" data-testid={`product-title-${product.id}`}>
+        <h3 className="font-normal text-xs md:text-sm mb-1.5 line-clamp-2 text-foreground leading-tight" data-testid={`product-title-${product.id}`}>
           {product.title}
         </h3>
         
@@ -109,7 +109,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {renderStars(product.rating)}
             </div>
             {product.reviewCount && (
-              <span className="text-xs text-gray-500 dark:text-muted-foreground" data-testid={`review-count-${product.id}`}>
+              <span className="text-xs text-muted-foreground" data-testid={`review-count-${product.id}`}>
                 ({product.reviewCount})
               </span>
             )}
@@ -118,12 +118,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         
         <div className="flex flex-col gap-0.5 mb-2">
           {product.discountedPrice && (
-            <span className="text-sm md:text-base font-bold text-gray-900 dark:text-foreground" data-testid={`discounted-price-${product.id}`}>
+            <span className="text-sm md:text-base font-bold text-foreground" data-testid={`discounted-price-${product.id}`}>
               ₹{parseFloat(product.discountedPrice).toLocaleString('en-IN')}
             </span>
           )}
           {product.originalPrice && product.discountedPrice !== product.originalPrice && (
-            <span className="text-xs text-gray-500 dark:text-muted-foreground line-through" data-testid={`original-price-${product.id}`}>
+            <span className="text-xs text-muted-foreground line-through" data-testid={`original-price-${product.id}`}>
               ₹{parseFloat(product.originalPrice).toLocaleString('en-IN')}
             </span>
           )}
