@@ -46,7 +46,7 @@ export default function Admin() {
                 </div>
                 
                 <Tabs defaultValue="analytics" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-4 sm:mb-6 lg:mb-8 max-w-4xl mx-auto h-auto p-1">
+                  <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6 lg:mb-8 max-w-4xl mx-auto h-auto p-1">
                     <TabsTrigger value="analytics" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 py-2 sm:py-3 text-xs sm:text-sm" data-testid="tab-analytics">
                       <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span className="sm:hidden">Stats</span>
