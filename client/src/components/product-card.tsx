@@ -121,13 +121,12 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           <div className="flex justify-end mt-1">
             <Button 
               size="sm"
-              className={`${getPlatformButtonStyle(product.platform)} h-8 px-3 rounded-md text-xs font-medium shadow-sm hover:shadow-md`}
+              className={`${getPlatformButtonStyle(product.platform)} h-8 px-4 min-w-[100px] rounded-md text-xs font-medium shadow-sm hover:shadow-md`}
               onClick={handleAffiliateClick}
               data-testid={`view-deal-button-${product.id}`}
             >
               <ExternalLink className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">{getPlatformButtonText(product.platform).replace('View On ', '')}</span>
-              <span className="sm:hidden">View</span>
+              <span>{getPlatformButtonText(product.platform)}</span>
             </Button>
           </div>
         </div>
