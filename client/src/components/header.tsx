@@ -31,9 +31,6 @@ export default function Header() {
             <Link href="/products" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-products">
               Products
             </Link>
-            <Link href="/products" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-categories">
-              Categories
-            </Link>
             <Link href="/about" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-about">
               About
             </Link>
@@ -87,14 +84,6 @@ export default function Header() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Products
-              </Link>
-              <Link 
-                href="/products" 
-                className="text-foreground hover:text-primary transition-colors font-medium py-2 px-2 rounded-lg hover:bg-muted/50" 
-                data-testid="mobile-nav-categories"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Categories
               </Link>
               <Link 
                 href="/about" 
