@@ -50,18 +50,18 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-8 glass-effect">
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-gradient-to-br from-accent to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Mail className="text-2xl text-white" />
+    <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 lg:p-8 glass-effect">
+      <div className="text-center mb-4 sm:mb-6">
+        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-accent to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+          <Mail className="text-lg sm:text-2xl text-white" />
         </div>
-        <h3 className="text-xl font-semibold">Get in Touch</h3>
-        <p className="text-muted-foreground">Send us a message and we'll respond as soon as possible</p>
+        <h3 className="text-lg sm:text-xl font-semibold">Get in Touch</h3>
+        <p className="text-sm sm:text-base text-muted-foreground">Send us a message and we'll respond as soon as possible</p>
       </div>
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="contact-form">
-          <div className="grid md:grid-cols-2 gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 sm:space-y-4" data-testid="contact-form">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             <FormField
               control={form.control}
               name="name"
@@ -142,7 +142,7 @@ export default function ContactForm() {
           
           <Button 
             type="submit" 
-            className="w-full bg-gradient-to-r from-accent to-orange-500 hover:from-orange-500 hover:to-accent text-white py-3 rounded-lg font-medium transition-all duration-300"
+            className="w-full bg-gradient-to-r from-accent to-orange-500 hover:from-orange-500 hover:to-accent text-white py-2.5 sm:py-3 rounded-lg font-medium transition-all duration-300 text-sm sm:text-base"
             disabled={submitContactMutation.isPending}
             data-testid="submit-contact-button"
           >

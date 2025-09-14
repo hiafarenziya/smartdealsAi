@@ -62,15 +62,15 @@ export default function AddProductForm() {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-8 glass-effect">
-      <h3 className="text-2xl font-semibold mb-6 flex items-center">
-        <PlusCircle className="text-primary mr-3" />
+    <div className="bg-card border border-border rounded-2xl p-4 sm:p-6 lg:p-8 glass-effect">
+      <h3 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 flex items-center">
+        <PlusCircle className="text-primary mr-2 sm:mr-3 w-5 h-5 sm:w-6 sm:h-6" />
         Add New Product
       </h3>
       
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" data-testid="add-product-form">
-          <div className="grid md:grid-cols-2 gap-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6" data-testid="add-product-form">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <FormField
               control={form.control}
               name="title"
@@ -114,7 +114,7 @@ export default function AddProductForm() {
             />
           </div>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <FormField
               control={form.control}
               name="originalPrice"

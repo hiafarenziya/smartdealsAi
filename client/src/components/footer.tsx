@@ -3,11 +3,11 @@ import { Bot, Twitter, Facebook, Instagram, Mail, Phone, MapPin, Globe, Heart } 
 
 export default function Footer() {
   return (
-    <footer className="bg-card border-t border-border py-16">
+    <footer className="bg-card border-t border-border py-8 sm:py-12 lg:py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8">
           {/* Brand */}
-          <div className="md:col-span-1">
+          <div className="sm:col-span-2 md:col-span-1">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center ai-glow">
                 <Bot className="text-white text-lg" />
@@ -85,13 +85,13 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-border pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-muted-foreground text-sm mb-4 md:mb-0">
-              © 2024 Smart Deals AI by Ajay Kumar. All rights reserved. | iajaykumar.com
+        <div className="border-t border-border pt-6 sm:pt-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left">
+            <div className="text-muted-foreground text-xs sm:text-sm mb-2 sm:mb-0">
+              © 2024 Smart Deals AI by Ajay Kumar. All rights reserved.
             </div>
-            <div className="text-muted-foreground text-sm flex items-center">
-              Made with <Heart className="text-red-500 mx-1 w-4 h-4" /> for smart shoppers in India
+            <div className="text-muted-foreground text-xs sm:text-sm flex items-center justify-center">
+              Made with <Heart className="text-red-500 mx-1 w-3 h-3 sm:w-4 sm:h-4" /> for smart shoppers in India
             </div>
           </div>
         </div>

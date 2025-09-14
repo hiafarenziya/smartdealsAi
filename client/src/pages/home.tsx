@@ -51,44 +51,54 @@ export default function Home() {
             
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto mb-12">
-              <div className="relative">
-                <Input
-                  type="text" 
-                  placeholder="Search for products, brands, or categories..."
-                  className="w-full px-6 py-4 pl-14 bg-card border border-border rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  data-testid="hero-search-input"
-                />
-                <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-0">
+                <div className="relative flex-1">
+                  <Input
+                    type="text" 
+                    placeholder="Search for products, brands..."
+                    className="w-full px-4 sm:px-6 py-3 sm:py-4 pl-12 sm:pl-14 pr-4 sm:pr-32 bg-card border border-border rounded-2xl text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    data-testid="hero-search-input"
+                  />
+                  <Search className="absolute left-3 sm:left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4 sm:w-5 sm:h-5" />
+                  <Button 
+                    className="hidden sm:block absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-primary to-secondary text-white px-4 sm:px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-all"
+                    onClick={handleSearch}
+                    data-testid="hero-search-button-desktop"
+                  >
+                    <Sparkles className="mr-2 w-4 h-4" />
+                    Search
+                  </Button>
+                </div>
                 <Button 
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-xl font-medium hover:shadow-lg transition-all"
+                  className="sm:hidden bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-medium hover:shadow-lg transition-all w-full"
                   onClick={handleSearch}
-                  data-testid="hero-search-button"
+                  data-testid="hero-search-button-mobile"
                 >
                   <Sparkles className="mr-2 w-4 h-4" />
-                  Search
+                  Search AI Deals
                 </Button>
               </div>
             </div>
             
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2" data-testid="stat-products">10K+</div>
-                <div className="text-muted-foreground">Products</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 max-w-3xl mx-auto">
+              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2" data-testid="stat-products">10K+</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">Products</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-secondary mb-2" data-testid="stat-savings">50%</div>
-                <div className="text-muted-foreground">Avg. Savings</div>
+              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary mb-1 sm:mb-2" data-testid="stat-savings">50%</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">Avg. Savings</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-accent mb-2" data-testid="stat-monitoring">24/7</div>
-                <div className="text-muted-foreground">AI Monitoring</div>
+              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-accent mb-1 sm:mb-2" data-testid="stat-monitoring">24/7</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">AI Monitoring</div>
               </div>
-              <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-primary mb-2" data-testid="stat-users">5K+</div>
-                <div className="text-muted-foreground">Happy Users</div>
+              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2" data-testid="stat-users">5K+</div>
+                <div className="text-xs sm:text-sm text-muted-foreground">Happy Users</div>
               </div>
             </div>
           </div>
@@ -105,8 +115,8 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-2xl bg-card border border-border glass-effect" data-testid="feature-analysis">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="text-center p-6 sm:p-8 rounded-2xl bg-card border border-border glass-effect" data-testid="feature-analysis">
               <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 ai-glow">
                 <Brain className="text-2xl text-white" />
               </div>
