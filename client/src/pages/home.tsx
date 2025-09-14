@@ -64,6 +64,11 @@ export default function Home() {
     setShowSearchResults(false);
   };
 
+  const navigateToProducts = (path: string) => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    setLocation(path);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -288,7 +293,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Button 
               className="bg-gradient-to-r from-secondary to-primary hover:from-primary hover:to-secondary text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 transform hover:-translate-y-1 group" 
-              onClick={() => setLocation('/products')}
+              onClick={() => navigateToProducts('/products')}
               data-testid="explore-more-button"
             >
               <Search className="mr-2 w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
@@ -310,7 +315,7 @@ export default function Home() {
           
           <div className="grid md:grid-cols-3 gap-8">
             {/* Amazon */}
-            <div className="group bg-card border border-border rounded-2xl p-8 text-center glass-effect hover:border-accent transition-all duration-300 hover:scale-105 transform hover:-translate-y-2 cursor-pointer" data-testid="platform-amazon" onClick={() => setLocation('/products?platform=Amazon')}>
+            <div className="group bg-card border border-border rounded-2xl p-8 text-center glass-effect hover:border-accent transition-all duration-300 hover:scale-105 transform hover:-translate-y-2 cursor-pointer" data-testid="platform-amazon" onClick={() => navigateToProducts('/products?platform=Amazon')}>
               <div className="w-20 h-20 bg-gradient-to-br from-accent to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <ShoppingCart className="text-3xl text-white" />
               </div>
@@ -319,7 +324,7 @@ export default function Home() {
               <div className="text-3xl font-bold text-accent mb-4">2.5K+ Deals</div>
               <Button 
                 className="w-full bg-accent hover:bg-accent/90 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg transform hover:-translate-y-1"
-                onClick={() => setLocation('/products?platform=Amazon')}
+                onClick={() => navigateToProducts('/products?platform=Amazon')}
                 data-testid="browse-amazon-button"
               >
                 Browse Amazon Deals
@@ -327,7 +332,7 @@ export default function Home() {
             </div>
             
             {/* Flipkart */}
-            <div className="group bg-card border border-border rounded-2xl p-8 text-center glass-effect hover:border-secondary transition-all duration-300 hover:scale-105 transform hover:-translate-y-2 cursor-pointer" data-testid="platform-flipkart" onClick={() => setLocation('/products?platform=Flipkart')}>
+            <div className="group bg-card border border-border rounded-2xl p-8 text-center glass-effect hover:border-secondary transition-all duration-300 hover:scale-105 transform hover:-translate-y-2 cursor-pointer" data-testid="platform-flipkart" onClick={() => navigateToProducts('/products?platform=Flipkart')}>
               <div className="w-20 h-20 bg-gradient-to-br from-secondary to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <ShoppingCart className="text-3xl text-white" />
               </div>
@@ -336,7 +341,7 @@ export default function Home() {
               <div className="text-3xl font-bold text-secondary mb-4">1.8K+ Deals</div>
               <Button 
                 className="w-full bg-secondary hover:bg-secondary/90 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg transform hover:-translate-y-1"
-                onClick={() => setLocation('/products?platform=Flipkart')}
+                onClick={() => navigateToProducts('/products?platform=Flipkart')}
                 data-testid="browse-flipkart-button"
               >
                 Browse Flipkart Deals
@@ -344,7 +349,7 @@ export default function Home() {
             </div>
             
             {/* Myntra */}
-            <div className="group bg-card border border-border rounded-2xl p-8 text-center glass-effect hover:border-primary transition-all duration-300 hover:scale-105 transform hover:-translate-y-2 cursor-pointer" data-testid="platform-myntra" onClick={() => setLocation('/products?platform=Myntra')}>
+            <div className="group bg-card border border-border rounded-2xl p-8 text-center glass-effect hover:border-primary transition-all duration-300 hover:scale-105 transform hover:-translate-y-2 cursor-pointer" data-testid="platform-myntra" onClick={() => navigateToProducts('/products?platform=Myntra')}>
               <div className="w-20 h-20 bg-gradient-to-br from-primary to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                 <Shirt className="text-3xl text-white" />
               </div>
@@ -353,7 +358,7 @@ export default function Home() {
               <div className="text-3xl font-bold text-primary mb-4">950+ Deals</div>
               <Button 
                 className="w-full bg-primary hover:bg-primary/90 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg transform hover:-translate-y-1"
-                onClick={() => setLocation('/products?platform=Myntra')}
+                onClick={() => navigateToProducts('/products?platform=Myntra')}
                 data-testid="browse-myntra-button"
               >
                 Browse Myntra Deals
@@ -391,7 +396,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 className="bg-gradient-to-r from-accent to-orange-500 hover:from-orange-500 hover:to-accent text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 transform hover:-translate-y-1 group" 
-                onClick={() => setLocation('/products')}
+                onClick={() => navigateToProducts('/products')}
                 data-testid="cta-start-button"
               >
                 <Rocket className="mr-2 w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
