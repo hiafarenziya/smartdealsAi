@@ -12,13 +12,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { insertCategorySchema, insertPlatformSchema, type Category, type Platform } from "@shared/schema";
-import { Trash2, Edit, Plus, Tag, Globe } from "lucide-react";
+import { Trash2, Edit, Plus, Tag, Globe, Smile } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+
+// Common ecommerce and shopping emojis
+const PLATFORM_EMOJIS = [
+  "🛒", "🛍️", "👕", "👔", "👗", "👠", "👜", "💍", "📱", "💻", 
+  "🏪", "🏬", "🎁", "📦", "🚚", "💳", "💰", "🛎️", "🏷️", "🎯",
+  "📚", "🍔", "☕", "🍕", "🥘", "🎮", "🏠", "⚽", "🎵", "🌟",
+  "🔥", "⭐", "✨", "💫", "🎪", "🎨", "📸", "🎬", "🔊", "⚡",
+];
 
 export function ManageCategoriesPlatforms() {
   const { toast } = useToast();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingPlatform, setEditingPlatform] = useState<Platform | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // Fetch categories and platforms
   const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
@@ -426,12 +436,49 @@ export function ManageCategoriesPlatforms() {
                       <FormItem>
                         <FormLabel className="text-sm">Icon (Emoji)</FormLabel>
                         <FormControl>
-                          <Input 
-                            placeholder="🛒 🛍️ 👕" 
-                            {...field} 
-                            data-testid="input-platform-icon"
-                            className="text-sm"
-                          />
+                          <div className="flex gap-2">
+                            <Input 
+                              placeholder="🛒 🛍️ 👕" 
+                              {...field} 
+                              data-testid="input-platform-icon"
+                              className="text-sm flex-1"
+                            />
+                            <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="px-3"
+                                  title="Choose Emoji"
+                                >
+                                  <Smile className="w-4 h-4" />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80 p-2">
+                                <div className="grid grid-cols-8 gap-1">
+                                  {PLATFORM_EMOJIS.map((emoji, index) => (
+                                    <Button
+                                      key={index}
+                                      type="button"
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0 hover:bg-accent text-lg"
+                                      onClick={() => {
+                                        field.onChange(emoji);
+                                        setShowEmojiPicker(false);
+                                      }}
+                                    >
+                                      {emoji}
+                                    </Button>
+                                  ))}
+                                </div>
+                                <div className="mt-2 pt-2 border-t text-xs text-muted-foreground text-center">
+                                  Click an emoji to select it
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
