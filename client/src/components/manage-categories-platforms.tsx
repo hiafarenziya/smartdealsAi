@@ -136,7 +136,6 @@ export function ManageCategoriesPlatforms() {
     defaultValues: {
       name: "",
       description: "",
-      icon: "",
       isActive: true
     }
   });
@@ -146,7 +145,6 @@ export function ManageCategoriesPlatforms() {
     resolver: zodResolver(insertPlatformSchema),
     defaultValues: {
       name: "",
-      icon: "",
       color: "",
       isActive: true
     }
@@ -173,7 +171,6 @@ export function ManageCategoriesPlatforms() {
     categoryForm.reset({
       name: category.name,
       description: category.description || "",
-      icon: category.icon || "",
       isActive: category.isActive || false
     });
   };
@@ -182,7 +179,6 @@ export function ManageCategoriesPlatforms() {
     setEditingPlatform(platform);
     platformForm.reset({
       name: platform.name,
-      icon: platform.icon || "",
       color: platform.color || "",
       isActive: platform.isActive || false
     });
@@ -193,7 +189,6 @@ export function ManageCategoriesPlatforms() {
     categoryForm.reset({
       name: "",
       description: "",
-      icon: "",
       isActive: true
     });
   };
@@ -202,7 +197,6 @@ export function ManageCategoriesPlatforms() {
     setEditingPlatform(null);
     platformForm.reset({
       name: "",
-      icon: "",
       color: "",
       isActive: true
     });

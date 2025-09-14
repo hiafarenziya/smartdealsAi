@@ -10,14 +10,17 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Edit2, Trash2, Package, Star, ExternalLink, Search } from "lucide-react";
-import type { Product, InsertProduct } from "@shared/schema";
+import { Edit2, Trash2, Package, Star, ExternalLink, Search, Filter, X } from "lucide-react";
+import type { Product, InsertProduct, Category, Platform } from "@shared/schema";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function ProductManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedPlatform, setSelectedPlatform] = useState<string>("");
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
@@ -25,17 +28,44 @@ export default function ProductManagement() {
     queryKey: ["/api/products"],
   });
 
-  // Filter products based on search query
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ["/api/categories"]
+  });
+
+  const { data: platforms = [] } = useQuery<Platform[]>({
+    queryKey: ["/api/platforms"]
+  });
+
+  // Filter products based on search query, category, and platform
   const filteredProducts = useMemo(() => {
     if (!products) return [];
-    if (!searchQuery.trim()) return products;
     
-    return products.filter(product => 
-      product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
-  }, [products, searchQuery]);
+    return products.filter(product => {
+      // Search query filter
+      const matchesSearch = !searchQuery.trim() || 
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.platform.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (product.category && product.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      // Category filter
+      const matchesCategory = !selectedCategory || selectedCategory === 'all' || product.category === selectedCategory;
+      
+      // Platform filter  
+      const matchesPlatform = !selectedPlatform || selectedPlatform === 'all' || product.platform === selectedPlatform;
+      
+      return matchesSearch && matchesCategory && matchesPlatform;
+    });
+  }, [products, searchQuery, selectedCategory, selectedPlatform]);
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("all");
+    setSelectedPlatform("all");
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = searchQuery.trim() || (selectedCategory && selectedCategory !== 'all') || (selectedPlatform && selectedPlatform !== 'all');
 
   const deleteProductMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -161,16 +191,77 @@ export default function ProductManagement() {
         </Badge>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-        <Input
-          placeholder="Search products by name, platform, or category..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 text-sm"
-          data-testid="input-search-products"
-        />
+      {/* Search and Filter Section */}
+      <div className="space-y-3">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Search products by name, platform, or category..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 text-sm"
+            data-testid="input-search-products"
+          />
+        </div>
+        
+        {/* Filters */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">Filters:</span>
+          </div>
+          
+          <div className="flex flex-1 flex-wrap gap-2">
+            {/* Category Filter */}
+            <div className="min-w-[150px] flex-1 sm:flex-initial">
+              <Select value={selectedCategory || 'all'} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="text-sm h-9">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.filter(cat => cat.isActive).map((category) => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Platform Filter */}
+            <div className="min-w-[150px] flex-1 sm:flex-initial">
+              <Select value={selectedPlatform || 'all'} onValueChange={setSelectedPlatform}>
+                <SelectTrigger className="text-sm h-9">
+                  <SelectValue placeholder="All Platforms" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Platforms</SelectItem>
+                  {platforms.filter(platform => platform.isActive).map((platform) => (
+                    <SelectItem key={platform.id} value={platform.name}>
+                      {platform.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Clear Filters Button */}
+            {hasActiveFilters && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={clearAllFilters}
+                className="text-sm h-9 px-3"
+                data-testid="button-clear-filters"
+              >
+                <X className="w-3 h-3 mr-1" />
+                Clear
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
 
       {!products || products.length === 0 ? (
@@ -185,8 +276,14 @@ export default function ProductManagement() {
         <Card className="glass-effect border-border">
           <CardContent className="p-6 text-center">
             <Search className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-            <h4 className="text-base font-semibold mb-2">No Products Match Your Search</h4>
-            <p className="text-sm text-muted-foreground">Try adjusting your search terms or clear the search to see all products.</p>
+            <h4 className="text-base font-semibold mb-2">No Products Match Your Filters</h4>
+            <p className="text-sm text-muted-foreground mb-3">Try adjusting your search terms or filters to see more products.</p>
+            {hasActiveFilters && (
+              <Button variant="outline" onClick={clearAllFilters} className="text-sm">
+                <X className="w-3 h-3 mr-1" />
+                Clear All Filters
+              </Button>
+            )}
           </CardContent>
         </Card>
       ) : (

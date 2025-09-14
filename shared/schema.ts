@@ -71,46 +71,17 @@ export const insertContactSchema = createInsertSchema(contacts).omit({
   createdAt: true,
 });
 
-// Helper function to validate icon field (emoji or secure URL)
-const iconValidator = z.string().optional().refine((value) => {
-  if (!value || value.trim() === "") return true;
-  
-  // Check if it's a valid HTTPS URL for images
-  try {
-    const url = new URL(value);
-    if (url.protocol === 'https:') {
-      // Check if it looks like an image URL
-      const pathname = url.pathname.toLowerCase();
-      const imageExtensions = ['.png', '.jpg', '.jpeg', '.svg', '.webp', '.gif'];
-      const isImageExt = imageExtensions.some(ext => pathname.endsWith(ext));
-      
-      // Allow if it has image extension or is from trusted domains
-      const trustedDomains = ['imgur.com', 'github.com', 'githubusercontent.com', 'unsplash.com', 'pexels.com'];
-      const isTrustedDomain = trustedDomains.some(domain => url.hostname.endsWith(domain));
-      
-      return isImageExt || isTrustedDomain || pathname.includes('image') || pathname.includes('icon');
-    }
-    return false;
-  } catch {
-    // If URL parsing fails, treat as emoji (short string)
-    return value.length <= 10; // Emojis are typically 1-4 characters
-  }
-}, {
-  message: "Icon must be an emoji or a secure HTTPS URL pointing to an image (PNG, JPG, SVG, WebP)"
-});
 
 export const insertCategorySchema = createInsertSchema(categories).omit({
   id: true,
   createdAt: true,
-}).extend({
-  icon: iconValidator
+  icon: true,
 });
 
 export const insertPlatformSchema = createInsertSchema(platforms).omit({
   id: true,
   createdAt: true,
-}).extend({
-  icon: iconValidator
+  icon: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
