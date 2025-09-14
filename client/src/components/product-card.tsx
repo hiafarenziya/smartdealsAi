@@ -47,6 +47,32 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const getPlatformButtonText = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'amazon':
+        return 'View Deal On Amazon';
+      case 'flipkart':
+        return 'View Deal On Flipkart';
+      case 'myntra':
+        return 'View Deal On Myntra';
+      default:
+        return 'View Deal';
+    }
+  };
+
+  const getPlatformButtonStyle = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'amazon':
+        return 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white';
+      case 'flipkart':
+        return 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white';
+      case 'myntra':
+        return 'bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white';
+      default:
+        return 'bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white';
+    }
+  };
+
   return (
     <div className="product-card bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
       <div className="relative bg-background">
@@ -103,12 +129,12 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         
         <Button 
-          className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-300 shadow-sm hover:shadow-md text-sm lg:text-base"
+          className={`w-full ${getPlatformButtonStyle(product.platform)} py-2.5 lg:py-3 rounded-lg font-medium transition-all duration-300 shadow-sm hover:shadow-md text-sm lg:text-base`}
           onClick={handleAffiliateClick}
           data-testid={`view-deal-button-${product.id}`}
         >
           <ExternalLink className="mr-2 w-3 h-3 lg:w-4 lg:h-4" />
-          View Deal
+          {getPlatformButtonText(product.platform)}
         </Button>
       </div>
     </div>
