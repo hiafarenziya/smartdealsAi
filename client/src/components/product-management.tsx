@@ -177,135 +177,260 @@ export default function ProductManagement() {
         <div className="grid gap-2 sm:gap-3">
           {filteredProducts.map((product) => (
             <Card key={product.id} className="glass-effect border-border">
-              <CardContent className="p-2">
-                {/* First Line: Image, Product Name, Action Buttons */}
-                <div className="flex items-center justify-between gap-2 mb-1">
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    {/* Product Image */}
-                    {product.imageUrl ? (
-                      <img 
-                        src={product.imageUrl} 
-                        alt={product.title}
-                        className="w-8 h-8 rounded-md object-cover bg-muted flex-shrink-0"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
-                        <Package className="w-3 h-3 text-muted-foreground" />
-                      </div>
-                    )}
-                    
-                    {/* Product Name */}
-                    <h4 className="font-medium text-xs line-clamp-1 flex-1 min-w-0">
-                      {product.title}
-                    </h4>
-                  </div>
+              <CardContent className="p-2 sm:p-3">
+                {/* Mobile Layout */}
+                <div className="block sm:hidden">
+                  {/* First Line: Image, Product Name, Action Buttons */}
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      {/* Product Image - Bigger for mobile */}
+                      {product.imageUrl ? (
+                        <img 
+                          src={product.imageUrl} 
+                          alt={product.title}
+                          className="w-10 h-10 rounded-md object-cover bg-muted flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                          <Package className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                      )}
+                      
+                      {/* Product Name - Bigger for mobile */}
+                      <h4 className="font-medium text-sm line-clamp-1 flex-1 min-w-0">
+                        {product.title}
+                      </h4>
+                    </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-1 flex-shrink-0">
-                    {product.affiliateLink && (
+                    {/* Action Buttons - Smaller for mobile */}
+                    <div className="flex gap-1 flex-shrink-0">
+                      {product.affiliateLink && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => window.open(product.affiliateLink, '_blank')}
+                          className="h-6 w-6 p-0"
+                          title="View Product"
+                        >
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </Button>
+                      )}
+                      
                       <Button 
                         variant="outline" 
                         size="sm"
-                        onClick={() => window.open(product.affiliateLink, '_blank')}
+                        onClick={() => handleEditProduct(product)}
                         className="h-6 w-6 p-0"
-                        title="View Product"
+                        title="Edit Product"
+                        data-testid={`button-edit-${product.id}`}
                       >
-                        <ExternalLink className="w-2.5 h-2.5" />
+                        <Edit2 className="w-2.5 h-2.5" />
                       </Button>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            className="h-6 w-6 p-0"
+                            title="Delete Product"
+                          >
+                            <Trash2 className="w-2.5 h-2.5" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Product</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete "{product.title}"? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => handleDeleteProduct(product.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
+
+                  {/* Second Line: Category, Featured, Platform, Price, Off, Rating - Smaller for mobile */}
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {/* Category */}
+                    {product.category && (
+                      <Badge variant="secondary" className="text-xs px-1 py-0.5 h-4">
+                        {product.category}
+                      </Badge>
                     )}
                     
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => handleEditProduct(product)}
-                      className="h-6 w-6 p-0"
-                      title="Edit Product"
-                      data-testid={`button-edit-${product.id}`}
-                    >
-                      <Edit2 className="w-2.5 h-2.5" />
-                    </Button>
-
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="destructive" 
-                          size="sm" 
-                          className="h-6 w-6 p-0"
-                          title="Delete Product"
-                        >
-                          <Trash2 className="w-2.5 h-2.5" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Product</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete "{product.title}"? This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={() => handleDeleteProduct(product.id)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    {/* Featured */}
+                    {product.featured && (
+                      <Badge variant="default" className="text-xs px-1 py-0.5 h-4">
+                        <Star className="w-2 h-2 mr-0.5" />
+                        Featured
+                      </Badge>
+                    )}
+                    
+                    {/* Platform */}
+                    <Badge variant="outline" className="text-xs px-1 py-0.5 h-4">
+                      {product.platform}
+                    </Badge>
+                    
+                    {/* Price - Keep same size */}
+                    {product.discountedPrice && (
+                      <span className="font-medium text-primary text-xs">₹{product.discountedPrice}</span>
+                    )}
+                    
+                    {/* Original Price */}
+                    {product.originalPrice && product.discountedPrice && (
+                      <span className="text-muted-foreground line-through text-xs">₹{product.originalPrice}</span>
+                    )}
+                    
+                    {/* Off Percentage */}
+                    {product.discountPercentage && (
+                      <Badge variant="destructive" className="text-xs px-1 py-0.5 h-4">
+                        {product.discountPercentage}% OFF
+                      </Badge>
+                    )}
+                    
+                    {/* Rating */}
+                    {product.rating && (
+                      <div className="flex items-center gap-0.5 text-xs">
+                        <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+                        <span>{product.rating}</span>
+                        {product.reviewCount && (
+                          <span className="text-muted-foreground">({product.reviewCount})</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Second Line: Category, Featured, Platform, Price, Off, Rating */}
-                <div className="flex items-center gap-1 flex-wrap text-xs">
-                  {/* Category */}
-                  {product.category && (
-                    <Badge variant="secondary" className="text-xs px-1 py-0.5 h-5">
-                      {product.category}
-                    </Badge>
-                  )}
-                  
-                  {/* Featured */}
-                  {product.featured && (
-                    <Badge variant="default" className="text-xs px-1 py-0.5 h-5">
-                      <Star className="w-2 h-2 mr-0.5" />
-                      Featured
-                    </Badge>
-                  )}
-                  
-                  {/* Platform */}
-                  <Badge variant="outline" className="text-xs px-1 py-0.5 h-5">
-                    {product.platform}
-                  </Badge>
-                  
-                  {/* Price */}
-                  {product.discountedPrice && (
-                    <span className="font-medium text-primary">₹{product.discountedPrice}</span>
-                  )}
-                  
-                  {/* Original Price */}
-                  {product.originalPrice && product.discountedPrice && (
-                    <span className="text-muted-foreground line-through">₹{product.originalPrice}</span>
-                  )}
-                  
-                  {/* Off Percentage */}
-                  {product.discountPercentage && (
-                    <Badge variant="destructive" className="text-xs px-1 py-0.5 h-5">
-                      {product.discountPercentage}% OFF
-                    </Badge>
-                  )}
-                  
-                  {/* Rating */}
-                  {product.rating && (
-                    <div className="flex items-center gap-0.5">
-                      <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
-                      <span>{product.rating}</span>
-                      {product.reviewCount && (
-                        <span className="text-muted-foreground">({product.reviewCount})</span>
+                {/* Desktop Layout - Original Style */}
+                <div className="hidden sm:block">
+                  <div className="flex flex-row gap-3">
+                    {/* Product Image */}
+                    <div className="flex-shrink-0">
+                      {product.imageUrl ? (
+                        <img 
+                          src={product.imageUrl} 
+                          alt={product.title}
+                          className="w-14 h-14 rounded-md object-cover bg-muted"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-md bg-muted flex items-center justify-center">
+                          <Package className="w-5 h-5 text-muted-foreground" />
+                        </div>
                       )}
                     </div>
-                  )}
+
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-sm line-clamp-1 mb-1">
+                            {product.title}
+                          </h4>
+                          <div className="flex flex-wrap items-center gap-1 mb-1">
+                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
+                              {product.platform}
+                            </Badge>
+                            {product.category && (
+                              <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                                {product.category}
+                              </Badge>
+                            )}
+                            {product.featured && (
+                              <Badge variant="default" className="text-xs px-1.5 py-0.5">
+                                <Star className="w-2 h-2 mr-1" />
+                                Featured
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          {/* Pricing */}
+                          <div className="flex items-center gap-1 mb-1 flex-wrap">
+                            {product.discountedPrice && (
+                              <span className="font-medium text-primary text-sm">₹{product.discountedPrice}</span>
+                            )}
+                            {product.originalPrice && product.discountedPrice && (
+                              <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice}</span>
+                            )}
+                            {product.discountPercentage && (
+                              <Badge variant="destructive" className="text-xs px-1 py-0.5">
+                                {product.discountPercentage}% OFF
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* Rating */}
+                          {product.rating && (
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                              <span>{product.rating}</span>
+                              {product.reviewCount && (
+                                <span>({product.reviewCount})</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-1 self-start">
+                          {product.affiliateLink && (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => window.open(product.affiliateLink, '_blank')}
+                              className="h-7 w-7 p-0"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                            </Button>
+                          )}
+                          
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleEditProduct(product)}
+                            className="h-7 w-7 p-0"
+                            data-testid={`button-edit-${product.id}`}
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </Button>
+
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="destructive" size="sm" className="h-7 w-7 p-0">
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Product</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you want to delete "{product.title}"? This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => handleDeleteProduct(product.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
