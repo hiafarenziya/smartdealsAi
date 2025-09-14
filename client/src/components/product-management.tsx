@@ -18,6 +18,8 @@ export default function ProductManagement() {
   const queryClient = useQueryClient();
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -105,8 +107,22 @@ export default function ProductManagement() {
     updateProductMutation.mutate({ id, data: productData });
   };
 
-  const handleDeleteProduct = (id: string) => {
-    deleteProductMutation.mutate(id);
+  const handleDeleteProduct = () => {
+    if (productToDelete && deleteConfirmation === "DELETE") {
+      deleteProductMutation.mutate(productToDelete.id);
+      setProductToDelete(null);
+      setDeleteConfirmation("");
+    }
+  };
+
+  const openDeleteDialog = (product: Product) => {
+    setProductToDelete(product);
+    setDeleteConfirmation("");
+  };
+
+  const closeDeleteDialog = () => {
+    setProductToDelete(null);
+    setDeleteConfirmation("");
   };
 
   if (isLoading) {
@@ -258,35 +274,15 @@ export default function ProductManagement() {
                         <Edit2 className="w-4 h-4 text-muted-foreground hover:text-secondary" />
                       </Button>
 
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 w-8 p-0 hover:bg-muted"
-                            title="Delete Product"
-                          >
-                            <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Product</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete "{product.title}"? This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => handleDeleteProduct(product.id)}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0 hover:bg-muted"
+                        title="Delete Product"
+                        onClick={() => openDeleteDialog(product)}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -383,30 +379,14 @@ export default function ProductManagement() {
                             <Edit2 className="w-3 h-3" />
                           </Button>
 
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm" className="h-7 w-7 p-0">
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Product</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete "{product.title}"? This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => handleDeleteProduct(product.id)}
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            className="h-7 w-7 p-0"
+                            onClick={() => openDeleteDialog(product)}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -585,6 +565,53 @@ export default function ProductManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={productToDelete !== null} onOpenChange={(open) => !open && closeDeleteDialog()}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <Trash2 className="w-5 h-5" />
+              Delete Product - Confirmation Required
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <div className="text-foreground font-medium">
+                You are about to permanently delete:
+              </div>
+              <div className="p-3 bg-muted rounded-lg border-l-4 border-destructive">
+                <div className="font-semibold text-sm">{productToDelete?.title}</div>
+                <div className="text-xs text-muted-foreground">Platform: {productToDelete?.platform}</div>
+              </div>
+              <div className="text-destructive font-medium">
+                ⚠️ This action cannot be undone. All product data will be permanently lost.
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="delete-confirmation" className="text-sm font-medium">
+                  To confirm deletion, type <strong className="text-destructive">DELETE</strong> in the box below:
+                </Label>
+                <Input
+                  id="delete-confirmation"
+                  value={deleteConfirmation}
+                  onChange={(e) => setDeleteConfirmation(e.target.value)}
+                  placeholder="Type DELETE to confirm"
+                  className="font-mono"
+                  autoComplete="off"
+                />
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={closeDeleteDialog}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteProduct}
+              disabled={deleteConfirmation !== "DELETE" || deleteProductMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {deleteProductMutation.isPending ? "Deleting..." : "Delete Product"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
