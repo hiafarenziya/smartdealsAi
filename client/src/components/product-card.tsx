@@ -69,17 +69,15 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
     
     return (
       <div className="product-card bg-card border border-border rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 group flex items-stretch" data-testid={`product-card-${product.id}`}>
-        {/* Left: Product Image - Full Height */}
-        <div className="w-28 md:w-32 flex-shrink-0">
-          <div className="h-full bg-muted/20 dark:bg-muted/10 flex items-center justify-center p-2">
-            <img 
-              src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
-              alt={product.title} 
-              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 rounded-md"
-              data-testid={`product-image-${product.id}`}
-              loading="lazy"
-            />
-          </div>
+        {/* Left: Product Image - Full Height Down to Up */}
+        <div className="w-28 md:w-32 flex-shrink-0 bg-muted/20 dark:bg-muted/10">
+          <img 
+            src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
+            alt={product.title} 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            data-testid={`product-image-${product.id}`}
+            loading="lazy"
+          />
         </div>
         
         {/* Right: Product Details */}
@@ -104,12 +102,19 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
               </div>
             )}
             
-            {/* Amount */}
-            {amount && (
-              <div className="text-lg font-bold text-foreground" data-testid={`product-price-${product.id}`}>
-                ₹{parseFloat(amount).toLocaleString('en-IN')}
-              </div>
-            )}
+            {/* Prices */}
+            <div className="space-y-1">
+              {product.discountedPrice && (
+                <div className="text-lg font-bold text-foreground" data-testid={`discounted-price-${product.id}`}>
+                  ₹{parseFloat(product.discountedPrice).toLocaleString('en-IN')}
+                </div>
+              )}
+              {product.originalPrice && product.discountedPrice !== product.originalPrice && (
+                <div className="text-xs text-muted-foreground line-through" data-testid={`original-price-${product.id}`}>
+                  ₹{parseFloat(product.originalPrice).toLocaleString('en-IN')}
+                </div>
+              )}
+            </div>
           </div>
           
           {/* Action Button */}
