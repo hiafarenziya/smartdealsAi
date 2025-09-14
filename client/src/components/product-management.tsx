@@ -17,7 +17,6 @@ export default function ProductManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -71,7 +70,6 @@ export default function ProductManagement() {
       });
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       queryClient.invalidateQueries({ queryKey: ["/api/analytics/overview"] });
-      setIsEditDialogOpen(false);
       setEditingProduct(null);
     },
     onError: () => {
@@ -85,7 +83,6 @@ export default function ProductManagement() {
 
   const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
-    setIsEditDialogOpen(true);
   };
 
   const handleSaveEdit = () => {
@@ -228,171 +225,15 @@ export default function ProductManagement() {
                           </Button>
                         )}
                         
-                        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                          <DialogTrigger asChild>
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => handleEditProduct(product)}
-                              className="p-2"
-                            >
-                              <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto mx-4">
-                            <DialogHeader className="pb-4">
-                              <DialogTitle className="text-base sm:text-lg">Edit Product</DialogTitle>
-                              <DialogDescription className="text-sm">
-                                Update the product information below.
-                              </DialogDescription>
-                            </DialogHeader>
-                            
-                            {editingProduct && (
-                              <div className="space-y-3 sm:space-y-4">
-                                <div>
-                                  <Label htmlFor="edit-title" className="text-sm">Product Title</Label>
-                                  <Input
-                                    id="edit-title"
-                                    value={editingProduct.title}
-                                    onChange={(e) => setEditingProduct({
-                                      ...editingProduct,
-                                      title: e.target.value
-                                    })}
-                                    className="text-sm"
-                                  />
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="edit-description" className="text-sm">Description</Label>
-                                  <Textarea
-                                    id="edit-description"
-                                    value={editingProduct.description || ""}
-                                    onChange={(e) => setEditingProduct({
-                                      ...editingProduct,
-                                      description: e.target.value || null
-                                    })}
-                                    className="text-sm"
-                                    rows={3}
-                                  />
-                                </div>
-                                
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                  <div>
-                                    <Label htmlFor="edit-original-price" className="text-sm">Original Price</Label>
-                                    <Input
-                                      id="edit-original-price"
-                                      type="number"
-                                      value={editingProduct.originalPrice || ""}
-                                      onChange={(e) => setEditingProduct({
-                                        ...editingProduct,
-                                        originalPrice: e.target.value || null
-                                      })}
-                                      className="text-sm"
-                                    />
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="edit-discounted-price" className="text-sm">Discounted Price</Label>
-                                    <Input
-                                      id="edit-discounted-price"
-                                      type="number"
-                                      value={editingProduct.discountedPrice || ""}
-                                      onChange={(e) => setEditingProduct({
-                                        ...editingProduct,
-                                        discountedPrice: e.target.value || null
-                                      })}
-                                      className="text-sm"
-                                    />
-                                  </div>
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="edit-image-url" className="text-sm">Image URL</Label>
-                                  <Input
-                                    id="edit-image-url"
-                                    value={editingProduct.imageUrl || ""}
-                                    onChange={(e) => setEditingProduct({
-                                      ...editingProduct,
-                                      imageUrl: e.target.value || null
-                                    })}
-                                    className="text-sm"
-                                  />
-                                </div>
-                                
-                                <div>
-                                  <Label htmlFor="edit-affiliate-link" className="text-sm">Affiliate Link</Label>
-                                  <Input
-                                    id="edit-affiliate-link"
-                                    value={editingProduct.affiliateLink}
-                                    onChange={(e) => setEditingProduct({
-                                      ...editingProduct,
-                                      affiliateLink: e.target.value
-                                    })}
-                                    className="text-sm"
-                                  />
-                                </div>
-                                
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                                  <div>
-                                    <Label htmlFor="edit-platform" className="text-sm">Platform</Label>
-                                    <Input
-                                      id="edit-platform"
-                                      value={editingProduct.platform}
-                                      onChange={(e) => setEditingProduct({
-                                        ...editingProduct,
-                                        platform: e.target.value
-                                      })}
-                                      className="text-sm"
-                                    />
-                                  </div>
-                                  
-                                  <div>
-                                    <Label htmlFor="edit-category" className="text-sm">Category</Label>
-                                    <Input
-                                      id="edit-category"
-                                      value={editingProduct.category || ""}
-                                      onChange={(e) => setEditingProduct({
-                                        ...editingProduct,
-                                        category: e.target.value || null
-                                      })}
-                                      className="text-sm"
-                                    />
-                                  </div>
-                                </div>
-                                
-                                <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                                  <Switch
-                                    id="edit-featured"
-                                    checked={editingProduct.featured || false}
-                                    onCheckedChange={(checked) => setEditingProduct({
-                                      ...editingProduct,
-                                      featured: checked
-                                    })}
-                                  />
-                                  <Label htmlFor="edit-featured" className="text-sm">Featured Product</Label>
-                                </div>
-                              </div>
-                            )}
-                            
-                            <DialogFooter className="flex flex-col sm:flex-row gap-2 pt-4">
-                              <Button 
-                                variant="outline" 
-                                onClick={() => setIsEditDialogOpen(false)}
-                                disabled={updateProductMutation.isPending}
-                                className="text-sm"
-                              >
-                                Cancel
-                              </Button>
-                              <Button 
-                                onClick={handleSaveEdit}
-                                disabled={updateProductMutation.isPending}
-                                className="text-sm"
-                              >
-                                {updateProductMutation.isPending ? "Saving..." : "Save Changes"}
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleEditProduct(product)}
+                          className="p-2"
+                          data-testid={`button-edit-${product.id}`}
+                        >
+                          <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </Button>
 
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
@@ -427,6 +268,174 @@ export default function ProductManagement() {
           ))}
         </div>
       )}
+
+      {/* Edit Product Dialog */}
+      <Dialog open={editingProduct !== null} onOpenChange={(open) => !open && setEditingProduct(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto mx-4">
+          <DialogHeader className="pb-4">
+            <DialogTitle className="text-base sm:text-lg">Edit Product</DialogTitle>
+            <DialogDescription className="text-sm">
+              Update the product information below.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {editingProduct && (
+            <div className="space-y-3 sm:space-y-4">
+              <div>
+                <Label htmlFor="edit-title" className="text-sm">Product Title</Label>
+                <Input
+                  id="edit-title"
+                  value={editingProduct.title}
+                  onChange={(e) => setEditingProduct({
+                    ...editingProduct,
+                    title: e.target.value
+                  })}
+                  className="text-sm"
+                  data-testid="input-edit-title"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="edit-description" className="text-sm">Description</Label>
+                <Textarea
+                  id="edit-description"
+                  value={editingProduct.description || ""}
+                  onChange={(e) => setEditingProduct({
+                    ...editingProduct,
+                    description: e.target.value || null
+                  })}
+                  className="text-sm"
+                  rows={3}
+                  data-testid="input-edit-description"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <Label htmlFor="edit-original-price" className="text-sm">Original Price</Label>
+                  <Input
+                    id="edit-original-price"
+                    type="number"
+                    value={editingProduct.originalPrice || ""}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      originalPrice: e.target.value || null
+                    })}
+                    className="text-sm"
+                    data-testid="input-edit-original-price"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-discounted-price" className="text-sm">Discounted Price</Label>
+                  <Input
+                    id="edit-discounted-price"
+                    type="number"
+                    value={editingProduct.discountedPrice || ""}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      discountedPrice: e.target.value || null
+                    })}
+                    className="text-sm"
+                    data-testid="input-edit-discounted-price"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="edit-image-url" className="text-sm">Image URL</Label>
+                <Input
+                  id="edit-image-url"
+                  value={editingProduct.imageUrl || ""}
+                  onChange={(e) => setEditingProduct({
+                    ...editingProduct,
+                    imageUrl: e.target.value || null
+                  })}
+                  className="text-sm"
+                  data-testid="input-edit-image-url"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="edit-affiliate-link" className="text-sm">Affiliate Link</Label>
+                <Input
+                  id="edit-affiliate-link"
+                  value={editingProduct.affiliateLink}
+                  onChange={(e) => setEditingProduct({
+                    ...editingProduct,
+                    affiliateLink: e.target.value
+                  })}
+                  className="text-sm"
+                  data-testid="input-edit-affiliate-link"
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div>
+                  <Label htmlFor="edit-platform" className="text-sm">Platform</Label>
+                  <Input
+                    id="edit-platform"
+                    value={editingProduct.platform}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      platform: e.target.value
+                    })}
+                    className="text-sm"
+                    data-testid="input-edit-platform"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="edit-category" className="text-sm">Category</Label>
+                  <Input
+                    id="edit-category"
+                    value={editingProduct.category || ""}
+                    onChange={(e) => setEditingProduct({
+                      ...editingProduct,
+                      category: e.target.value || null
+                    })}
+                    className="text-sm"
+                    data-testid="input-edit-category"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                <Switch
+                  id="edit-featured"
+                  checked={editingProduct.featured || false}
+                  onCheckedChange={(checked) => setEditingProduct({
+                    ...editingProduct,
+                    featured: checked
+                  })}
+                  data-testid="switch-edit-featured"
+                />
+                <Label htmlFor="edit-featured" className="text-sm">Featured Product</Label>
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 pt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => setEditingProduct(null)}
+              disabled={updateProductMutation.isPending}
+              className="text-sm"
+              data-testid="button-cancel-edit"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveEdit}
+              disabled={updateProductMutation.isPending}
+              className="text-sm"
+              data-testid="button-save-edit"
+            >
+              {updateProductMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
