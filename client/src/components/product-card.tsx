@@ -77,21 +77,21 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="product-card bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 group" data-testid={`product-card-${product.id}`}>
       <div className="relative bg-muted/50">
-        <div className="aspect-[4/3] md:aspect-square bg-background flex items-center justify-center p-2 md:p-3 overflow-hidden">
+        <div className="aspect-[4/3] md:aspect-square bg-background flex items-center justify-center p-1 md:p-2 overflow-hidden rounded-lg m-1 md:m-2">
           <img 
             src={product.imageUrl || "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800&q=80"} 
             alt={product.title} 
-            className="w-full h-full object-contain max-w-[85%] max-h-[85%] group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain max-w-[95%] max-h-[95%] group-hover:scale-105 transition-transform duration-300 rounded-md"
             data-testid={`product-image-${product.id}`}
             loading="lazy"
           />
         </div>
         {product.discountPercentage && (
-          <Badge className="absolute top-1.5 left-1.5 bg-green-600 text-white border-0 text-xs font-semibold px-1.5 py-0.5 rounded" data-testid={`discount-badge-${product.id}`}>
+          <Badge className="absolute top-2 left-2 bg-green-600 text-white border-0 text-xs font-semibold px-1.5 py-0.5 rounded" data-testid={`discount-badge-${product.id}`}>
             {product.discountPercentage} OFF
           </Badge>
         )}
-        <div className="absolute top-1.5 right-1.5 bg-card/80 backdrop-blur-sm rounded-full p-1 shadow-sm">
+        <div className="absolute top-2 right-2 bg-card/80 backdrop-blur-sm rounded-full p-1 shadow-sm">
           <span className="text-xs" data-testid={`platform-icon-${product.id}`}>
             {getPlatformIcon(product.platform)}
           </span>
