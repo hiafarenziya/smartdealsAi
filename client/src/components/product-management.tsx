@@ -287,108 +287,95 @@ export default function ProductManagement() {
                   </div>
                 </div>
 
-                {/* Desktop Layout - Original Style */}
+                {/* Desktop Layout - Mobile Style Design */}
                 <div className="hidden sm:block">
-                  <div className="flex flex-row gap-3">
+                  <div className="flex items-center gap-3 py-2">
                     {/* Product Image */}
                     <div className="flex-shrink-0">
                       {product.imageUrl ? (
                         <img 
                           src={product.imageUrl} 
                           alt={product.title}
-                          className="w-14 h-14 rounded-md object-cover bg-muted"
+                          className="w-14 h-14 rounded-lg object-cover bg-muted"
                         />
                       ) : (
-                        <div className="w-14 h-14 rounded-md bg-muted flex items-center justify-center">
-                          <Package className="w-5 h-5 text-muted-foreground" />
+                        <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center">
+                          <Package className="w-6 h-6 text-muted-foreground" />
                         </div>
                       )}
                     </div>
 
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-sm line-clamp-1 mb-1">
-                            {product.title}
-                          </h4>
-                          <div className="flex flex-wrap items-center gap-1 mb-1">
-                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">
-                              {product.platform}
-                            </Badge>
-                            {product.category && (
-                              <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
-                                {product.category}
-                              </Badge>
-                            )}
-                            {product.featured && (
-                              <Badge variant="default" className="text-xs px-1.5 py-0.5">
-                                <Star className="w-2 h-2 mr-1" />
-                                Featured
-                              </Badge>
-                            )}
-                          </div>
-                          
-                          {/* Pricing */}
-                          <div className="flex items-center gap-1 mb-1 flex-wrap">
-                            {product.discountedPrice && (
-                              <span className="font-medium text-primary text-sm">₹{product.discountedPrice}</span>
-                            )}
-                            {product.originalPrice && product.discountedPrice && (
-                              <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice}</span>
-                            )}
-                            {product.discountPercentage && (
-                              <Badge variant="destructive" className="text-xs px-1 py-0.5">
-                                {product.discountPercentage}% OFF
-                              </Badge>
-                            )}
-                          </div>
-
-                          {/* Rating */}
-                          {product.rating && (
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                              <span>{product.rating}</span>
-                              {product.reviewCount && (
-                                <span>({product.reviewCount})</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex gap-1 self-start">
-                          {product.affiliateLink && (
-                            <Button 
-                              variant="outline" 
-                              size="sm"
-                              onClick={() => window.open(product.affiliateLink, '_blank')}
-                              className="h-7 w-7 p-0"
-                            >
-                              <ExternalLink className="w-3 h-3" />
-                            </Button>
-                          )}
-                          
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleEditProduct(product)}
-                            className="h-7 w-7 p-0"
-                            data-testid={`button-edit-${product.id}`}
-                          >
-                            <Edit2 className="w-3 h-3" />
-                          </Button>
-
-                          <Button 
-                            variant="destructive" 
-                            size="sm" 
-                            className="h-7 w-7 p-0"
-                            onClick={() => openDeleteDialog(product)}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        </div>
+                      {/* Brand/Platform */}
+                      <div className="text-xs font-medium text-muted-foreground uppercase mb-0.5">
+                        {product.platform}
                       </div>
+                      
+                      {/* Product Title */}
+                      <h4 className="font-medium text-sm text-foreground line-clamp-2 mb-1">
+                        {product.title}
+                      </h4>
+                      
+                      {/* Discount and Pricing */}
+                      <div className="flex items-center gap-2">
+                        {/* Discount Percentage */}
+                        {product.discountPercentage && (
+                          <div className="flex items-center text-chart-2 text-xs font-medium">
+                            <span className="mr-1">↓</span>{product.discountPercentage}%
+                          </div>
+                        )}
+                        
+                        {/* Original Price */}
+                        {product.originalPrice && product.discountedPrice && (
+                          <span className="text-xs text-muted-foreground line-through">
+                            ₹{product.originalPrice}
+                          </span>
+                        )}
+                        
+                        {/* Discounted Price */}
+                        {product.discountedPrice && (
+                          <span className="font-semibold text-sm text-primary">
+                            ₹{product.discountedPrice}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons - Clean Icons */}
+                    <div className="flex flex-col gap-1 flex-shrink-0">
+                      {product.affiliateLink && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => window.open(product.affiliateLink, '_blank')}
+                          className="h-8 w-8 p-0 hover:bg-muted"
+                          title="View Product"
+                        >
+                          <ExternalLink className="w-4 h-4 text-muted-foreground hover:text-primary" />
+                        </Button>
+                      )}
+                      
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleEditProduct(product)}
+                        className="h-8 w-8 p-0 hover:bg-muted"
+                        title="Edit Product"
+                        data-testid={`button-edit-${product.id}`}
+                      >
+                        <Edit2 className="w-4 h-4 text-muted-foreground hover:text-secondary" />
+                      </Button>
+
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0 hover:bg-muted"
+                        title="Delete Product"
+                        onClick={() => openDeleteDialog(product)}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
+                      </Button>
                     </div>
                   </div>
                 </div>
