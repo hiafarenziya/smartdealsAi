@@ -146,7 +146,7 @@ export default function ProductManagement() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 max-w-4xl mx-auto px-4 sm:px-6">
         <div>
           <h3 className="text-lg sm:text-xl font-semibold flex items-center">
             <Package className="text-primary mr-2 w-4 h-4 sm:w-5 sm:h-5" />
