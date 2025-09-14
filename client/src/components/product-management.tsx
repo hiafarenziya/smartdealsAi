@@ -178,64 +178,95 @@ export default function ProductManagement() {
           {filteredProducts.map((product) => (
             <Card key={product.id} className="glass-effect border-border">
               <CardContent className="p-2 sm:p-3">
-                {/* Mobile Layout */}
+                {/* Mobile Layout - Clean Minimal Style */}
                 <div className="block sm:hidden">
-                  {/* First Line: Image, Product Name, Action Buttons */}
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      {/* Product Image - Bigger for mobile */}
+                  <div className="flex items-center gap-3 py-2">
+                    {/* Product Image */}
+                    <div className="flex-shrink-0">
                       {product.imageUrl ? (
                         <img 
                           src={product.imageUrl} 
                           alt={product.title}
-                          className="w-10 h-10 rounded-md object-cover bg-muted flex-shrink-0"
+                          className="w-14 h-14 rounded-lg object-cover bg-gray-100"
                         />
                       ) : (
-                        <div className="w-10 h-10 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
-                          <Package className="w-4 h-4 text-muted-foreground" />
+                        <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center">
+                          <Package className="w-6 h-6 text-gray-400" />
                         </div>
                       )}
-                      
-                      {/* Product Name - Bigger for mobile */}
-                      <h4 className="font-medium text-sm line-clamp-1 flex-1 min-w-0">
-                        {product.title}
-                      </h4>
                     </div>
 
-                    {/* Action Buttons - Smaller for mobile */}
-                    <div className="flex gap-1 flex-shrink-0">
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0">
+                      {/* Brand/Platform */}
+                      <div className="text-xs font-medium text-gray-600 uppercase mb-0.5">
+                        {product.platform}
+                      </div>
+                      
+                      {/* Product Title */}
+                      <h4 className="font-medium text-sm text-gray-900 line-clamp-2 mb-1">
+                        {product.title}
+                      </h4>
+                      
+                      {/* Discount and Pricing */}
+                      <div className="flex items-center gap-2">
+                        {/* Discount Percentage */}
+                        {product.discountPercentage && (
+                          <div className="flex items-center text-green-600 text-xs font-medium">
+                            <span className="mr-1">↓</span>{product.discountPercentage}%
+                          </div>
+                        )}
+                        
+                        {/* Original Price */}
+                        {product.originalPrice && product.discountedPrice && (
+                          <span className="text-xs text-gray-500 line-through">
+                            ₹{product.originalPrice}
+                          </span>
+                        )}
+                        
+                        {/* Discounted Price */}
+                        {product.discountedPrice && (
+                          <span className="font-semibold text-sm text-gray-900">
+                            ₹{product.discountedPrice}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons - Clean Icons */}
+                    <div className="flex flex-col gap-1 flex-shrink-0">
                       {product.affiliateLink && (
                         <Button 
-                          variant="outline" 
+                          variant="ghost" 
                           size="sm"
                           onClick={() => window.open(product.affiliateLink, '_blank')}
-                          className="h-6 w-6 p-0"
+                          className="h-8 w-8 p-0 hover:bg-gray-100"
                           title="View Product"
                         >
-                          <ExternalLink className="w-2.5 h-2.5" />
+                          <ExternalLink className="w-4 h-4 text-gray-600" />
                         </Button>
                       )}
                       
                       <Button 
-                        variant="outline" 
+                        variant="ghost" 
                         size="sm"
                         onClick={() => handleEditProduct(product)}
-                        className="h-6 w-6 p-0"
+                        className="h-8 w-8 p-0 hover:bg-gray-100"
                         title="Edit Product"
                         data-testid={`button-edit-${product.id}`}
                       >
-                        <Edit2 className="w-2.5 h-2.5" />
+                        <Edit2 className="w-4 h-4 text-gray-600" />
                       </Button>
 
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button 
-                            variant="destructive" 
+                            variant="ghost" 
                             size="sm" 
-                            className="h-6 w-6 p-0"
+                            className="h-8 w-8 p-0 hover:bg-red-50"
                             title="Delete Product"
                           >
-                            <Trash2 className="w-2.5 h-2.5" />
+                            <Trash2 className="w-4 h-4 text-red-500" />
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
@@ -257,57 +288,6 @@ export default function ProductManagement() {
                         </AlertDialogContent>
                       </AlertDialog>
                     </div>
-                  </div>
-
-                  {/* Second Line: Category, Featured, Platform, Price, Off, Rating - Smaller for mobile */}
-                  <div className="flex items-center gap-1 flex-wrap">
-                    {/* Category */}
-                    {product.category && (
-                      <Badge variant="secondary" className="text-xs px-1 py-0.5 h-4">
-                        {product.category}
-                      </Badge>
-                    )}
-                    
-                    {/* Featured */}
-                    {product.featured && (
-                      <Badge variant="default" className="text-xs px-1 py-0.5 h-4">
-                        <Star className="w-2 h-2 mr-0.5" />
-                        Featured
-                      </Badge>
-                    )}
-                    
-                    {/* Platform */}
-                    <Badge variant="outline" className="text-xs px-1 py-0.5 h-4">
-                      {product.platform}
-                    </Badge>
-                    
-                    {/* Price - Keep same size */}
-                    {product.discountedPrice && (
-                      <span className="font-medium text-primary text-xs">₹{product.discountedPrice}</span>
-                    )}
-                    
-                    {/* Original Price */}
-                    {product.originalPrice && product.discountedPrice && (
-                      <span className="text-muted-foreground line-through text-xs">₹{product.originalPrice}</span>
-                    )}
-                    
-                    {/* Off Percentage */}
-                    {product.discountPercentage && (
-                      <Badge variant="destructive" className="text-xs px-1 py-0.5 h-4">
-                        {product.discountPercentage}% OFF
-                      </Badge>
-                    )}
-                    
-                    {/* Rating */}
-                    {product.rating && (
-                      <div className="flex items-center gap-0.5 text-xs">
-                        <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
-                        <span>{product.rating}</span>
-                        {product.reviewCount && (
-                          <span className="text-muted-foreground">({product.reviewCount})</span>
-                        )}
-                      </div>
-                    )}
                   </div>
                 </div>
 
