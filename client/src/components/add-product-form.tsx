@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { insertProductSchema } from "@shared/schema";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { insertProductSchema, type Category, type Platform } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,15 @@ import type { InsertProduct } from "@shared/schema";
 export default function AddProductForm() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Fetch active categories and platforms
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
+    queryKey: ["/api/categories", { active: true }]
+  });
+  
+  const { data: platforms = [], isLoading: platformsLoading } = useQuery<Platform[]>({
+    queryKey: ["/api/platforms", { active: true }]
+  });
   
   const form = useForm<InsertProduct>({
     resolver: zodResolver(insertProductSchema),
@@ -103,9 +112,18 @@ export default function AddProductForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Amazon">Amazon</SelectItem>
-                      <SelectItem value="Flipkart">Flipkart</SelectItem>
-                      <SelectItem value="Myntra">Myntra</SelectItem>
+                      {platformsLoading ? (
+                        <div className="p-2 text-sm text-muted-foreground">Loading platforms...</div>
+                      ) : platforms.length === 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground">No platforms available</div>
+                      ) : (
+                        platforms.map((platform) => (
+                          <SelectItem key={platform.id} value={platform.name}>
+                            {platform.icon && <span className="mr-2">{platform.icon}</span>}
+                            {platform.name}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -223,11 +241,17 @@ export default function AddProductForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="Electronics">Electronics</SelectItem>
-                      <SelectItem value="Fashion">Fashion</SelectItem>
-                      <SelectItem value="Home & Garden">Home & Garden</SelectItem>
-                      <SelectItem value="Books">Books</SelectItem>
-                      <SelectItem value="Sports">Sports</SelectItem>
+                      {categoriesLoading ? (
+                        <div className="p-2 text-sm text-muted-foreground">Loading categories...</div>
+                      ) : categories.length === 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground">No categories available</div>
+                      ) : (
+                        categories.map((category) => (
+                          <SelectItem key={category.id} value={category.name}>
+                            {category.name}
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />

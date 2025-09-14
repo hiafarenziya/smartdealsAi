@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
+import type { Category, Platform } from "@shared/schema";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import ProductCard from "@/components/product-card";
@@ -40,6 +41,15 @@ export default function Products() {
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products", queryParams],
+  });
+
+  // Fetch active categories and platforms for filters
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery<Category[]>({
+    queryKey: ["/api/categories", { active: true }]
+  });
+  
+  const { data: platforms = [], isLoading: platformsLoading } = useQuery<Platform[]>({
+    queryKey: ["/api/platforms", { active: true }]
   });
 
   const clearFilters = () => {
@@ -194,9 +204,16 @@ export default function Products() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Platforms</SelectItem>
-                        <SelectItem value="Amazon">🛒 Amazon</SelectItem>
-                        <SelectItem value="Flipkart">🛍️ Flipkart</SelectItem>
-                        <SelectItem value="Myntra">👕 Myntra</SelectItem>
+                        {platformsLoading ? (
+                          <div className="p-2 text-sm text-muted-foreground">Loading platforms...</div>
+                        ) : (
+                          platforms.map((platform) => (
+                            <SelectItem key={platform.id} value={platform.name}>
+                              {platform.icon && <span className="mr-2">{platform.icon}</span>}
+                              {platform.name}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
@@ -210,11 +227,15 @@ export default function Products() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Categories</SelectItem>
-                        <SelectItem value="Electronics">📱 Electronics</SelectItem>
-                        <SelectItem value="Fashion">👗 Fashion</SelectItem>
-                        <SelectItem value="Home & Garden">🏠 Home & Garden</SelectItem>
-                        <SelectItem value="Books">📚 Books</SelectItem>
-                        <SelectItem value="Sports">⚽ Sports</SelectItem>
+                        {categoriesLoading ? (
+                          <div className="p-2 text-sm text-muted-foreground">Loading categories...</div>
+                        ) : (
+                          categories.map((category) => (
+                            <SelectItem key={category.id} value={category.name}>
+                              {category.name}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
