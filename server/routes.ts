@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProductSchema, insertContactSchema, type Product } from "@shared/schema";
+import { insertProductSchema, insertContactSchema, insertCategorySchema, insertPlatformSchema, type Product } from "@shared/schema";
 import { sendEmail } from "./services/email";
 import bcrypt from "bcrypt";
 
@@ -274,6 +274,148 @@ Sent from Smart Deals AI contact form at ${new Date().toLocaleString()}
     } catch (error) {
       console.error("Error fetching contacts:", error);
       res.status(500).json({ message: "Failed to fetch contacts" });
+    }
+  });
+
+  // Categories routes
+  app.get("/api/categories", async (req, res) => {
+    try {
+      const activeOnly = req.query.active === 'true';
+      const categories = activeOnly 
+        ? await storage.getActiveCategories()
+        : await storage.getAllCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ message: "Failed to fetch categories" });
+    }
+  });
+
+  app.get("/api/categories/:id", async (req, res) => {
+    try {
+      const category = await storage.getCategory(req.params.id);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      res.json(category);
+    } catch (error) {
+      console.error("Error fetching category:", error);
+      res.status(500).json({ message: "Failed to fetch category" });
+    }
+  });
+
+  app.post("/api/categories", async (req, res) => {
+    try {
+      const validatedCategory = insertCategorySchema.parse(req.body);
+      const category = await storage.createCategory(validatedCategory);
+      res.status(201).json(category);
+    } catch (error) {
+      console.error("Error creating category:", error);
+      res.status(400).json({ 
+        message: "Invalid category data", 
+        details: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.put("/api/categories/:id", async (req, res) => {
+    try {
+      const validatedCategory = insertCategorySchema.partial().parse(req.body);
+      const category = await storage.updateCategory(req.params.id, validatedCategory);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      res.json(category);
+    } catch (error) {
+      console.error("Error updating category:", error);
+      res.status(400).json({ 
+        message: "Invalid category data", 
+        details: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.delete("/api/categories/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteCategory(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      res.json({ message: "Category deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      res.status(500).json({ message: "Failed to delete category" });
+    }
+  });
+
+  // Platforms routes
+  app.get("/api/platforms", async (req, res) => {
+    try {
+      const activeOnly = req.query.active === 'true';
+      const platforms = activeOnly 
+        ? await storage.getActivePlatforms()
+        : await storage.getAllPlatforms();
+      res.json(platforms);
+    } catch (error) {
+      console.error("Error fetching platforms:", error);
+      res.status(500).json({ message: "Failed to fetch platforms" });
+    }
+  });
+
+  app.get("/api/platforms/:id", async (req, res) => {
+    try {
+      const platform = await storage.getPlatform(req.params.id);
+      if (!platform) {
+        return res.status(404).json({ message: "Platform not found" });
+      }
+      res.json(platform);
+    } catch (error) {
+      console.error("Error fetching platform:", error);
+      res.status(500).json({ message: "Failed to fetch platform" });
+    }
+  });
+
+  app.post("/api/platforms", async (req, res) => {
+    try {
+      const validatedPlatform = insertPlatformSchema.parse(req.body);
+      const platform = await storage.createPlatform(validatedPlatform);
+      res.status(201).json(platform);
+    } catch (error) {
+      console.error("Error creating platform:", error);
+      res.status(400).json({ 
+        message: "Invalid platform data", 
+        details: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.put("/api/platforms/:id", async (req, res) => {
+    try {
+      const validatedPlatform = insertPlatformSchema.partial().parse(req.body);
+      const platform = await storage.updatePlatform(req.params.id, validatedPlatform);
+      if (!platform) {
+        return res.status(404).json({ message: "Platform not found" });
+      }
+      res.json(platform);
+    } catch (error) {
+      console.error("Error updating platform:", error);
+      res.status(400).json({ 
+        message: "Invalid platform data", 
+        details: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  app.delete("/api/platforms/:id", async (req, res) => {
+    try {
+      const success = await storage.deletePlatform(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Platform not found" });
+      }
+      res.json({ message: "Platform deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting platform:", error);
+      res.status(500).json({ message: "Failed to delete platform" });
     }
   });
 

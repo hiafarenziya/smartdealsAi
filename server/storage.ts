@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Product, type InsertProduct, type Contact, type InsertContact } from "@shared/schema";
+import { type User, type InsertUser, type Product, type InsertProduct, type Contact, type InsertContact, type Category, type InsertCategory, type Platform, type InsertPlatform } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -30,19 +30,118 @@ export interface IStorage {
   // Contact methods
   createContact(contact: InsertContact): Promise<Contact>;
   getAllContacts(): Promise<Contact[]>;
+  
+  // Category methods
+  getAllCategories(): Promise<Category[]>;
+  getActiveCategories(): Promise<Category[]>;
+  getCategory(id: string): Promise<Category | undefined>;
+  createCategory(category: InsertCategory): Promise<Category>;
+  updateCategory(id: string, category: Partial<InsertCategory>): Promise<Category | undefined>;
+  deleteCategory(id: string): Promise<boolean>;
+  
+  // Platform methods
+  getAllPlatforms(): Promise<Platform[]>;
+  getActivePlatforms(): Promise<Platform[]>;
+  getPlatform(id: string): Promise<Platform | undefined>;
+  createPlatform(platform: InsertPlatform): Promise<Platform>;
+  updatePlatform(id: string, platform: Partial<InsertPlatform>): Promise<Platform | undefined>;
+  deletePlatform(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private products: Map<string, Product>;
   private contacts: Map<string, Contact>;
+  private categories: Map<string, Category>;
+  private platforms: Map<string, Platform>;
 
   constructor() {
     this.users = new Map();
     this.products = new Map();
     this.contacts = new Map();
+    this.categories = new Map();
+    this.platforms = new Map();
     
-    // Initialize with sample products
+    // Initialize with sample data
+    this.initializeSampleData();
+  }
+
+  private initializeSampleData() {
+    // Initialize categories
+    const sampleCategories: Category[] = [
+      {
+        id: "1",
+        name: "Electronics",
+        description: "Mobile phones, laptops, and electronic gadgets",
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: "2", 
+        name: "Fashion",
+        description: "Clothing, accessories, and fashion items",
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: "3",
+        name: "Home & Garden",
+        description: "Home appliances, furniture, and garden items",
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: "4",
+        name: "Books",
+        description: "Books, eBooks, and educational materials",
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: "5",
+        name: "Sports",
+        description: "Sports equipment and fitness gear",
+        isActive: true,
+        createdAt: new Date()
+      }
+    ];
+
+    // Initialize platforms
+    const samplePlatforms: Platform[] = [
+      {
+        id: "1",
+        name: "Amazon",
+        icon: "🛒",
+        color: "#FF9900",
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: "2",
+        name: "Flipkart", 
+        icon: "🛍️",
+        color: "#2874F0",
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: "3",
+        name: "Myntra",
+        icon: "👕",
+        color: "#FF3F6C",
+        isActive: true,
+        createdAt: new Date()
+      }
+    ];
+
+    sampleCategories.forEach(category => {
+      this.categories.set(category.id, category);
+    });
+
+    samplePlatforms.forEach(platform => {
+      this.platforms.set(platform.id, platform);
+    });
+
     this.initializeSampleProducts();
   }
 
@@ -325,6 +424,95 @@ export class MemStorage implements IStorage {
     return Array.from(this.contacts.values()).sort((a, b) => 
       new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
     );
+  }
+
+  // Category methods
+  async getAllCategories(): Promise<Category[]> {
+    return Array.from(this.categories.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async getActiveCategories(): Promise<Category[]> {
+    return Array.from(this.categories.values())
+      .filter(category => category.isActive)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async getCategory(id: string): Promise<Category | undefined> {
+    return this.categories.get(id);
+  }
+
+  async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    const id = randomUUID();
+    const category: Category = {
+      ...insertCategory,
+      description: insertCategory.description || null,
+      isActive: insertCategory.isActive ?? true,
+      id,
+      createdAt: new Date()
+    };
+    this.categories.set(id, category);
+    return category;
+  }
+
+  async updateCategory(id: string, updateData: Partial<InsertCategory>): Promise<Category | undefined> {
+    const existing = this.categories.get(id);
+    if (!existing) return undefined;
+    
+    const updated: Category = {
+      ...existing,
+      ...updateData
+    };
+    this.categories.set(id, updated);
+    return updated;
+  }
+
+  async deleteCategory(id: string): Promise<boolean> {
+    return this.categories.delete(id);
+  }
+
+  // Platform methods
+  async getAllPlatforms(): Promise<Platform[]> {
+    return Array.from(this.platforms.values()).sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async getActivePlatforms(): Promise<Platform[]> {
+    return Array.from(this.platforms.values())
+      .filter(platform => platform.isActive)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async getPlatform(id: string): Promise<Platform | undefined> {
+    return this.platforms.get(id);
+  }
+
+  async createPlatform(insertPlatform: InsertPlatform): Promise<Platform> {
+    const id = randomUUID();
+    const platform: Platform = {
+      ...insertPlatform,
+      icon: insertPlatform.icon || null,
+      color: insertPlatform.color || null,
+      isActive: insertPlatform.isActive ?? true,
+      id,
+      createdAt: new Date()
+    };
+    this.platforms.set(id, platform);
+    return platform;
+  }
+
+  async updatePlatform(id: string, updateData: Partial<InsertPlatform>): Promise<Platform | undefined> {
+    const existing = this.platforms.get(id);
+    if (!existing) return undefined;
+    
+    const updated: Platform = {
+      ...existing,
+      ...updateData
+    };
+    this.platforms.set(id, updated);
+    return updated;
+  }
+
+  async deletePlatform(id: string): Promise<boolean> {
+    return this.platforms.delete(id);
   }
 }
 
