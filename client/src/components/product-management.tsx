@@ -187,11 +187,11 @@ export default function ProductManagement() {
                         <img 
                           src={product.imageUrl} 
                           alt={product.title}
-                          className="w-14 h-14 rounded-lg object-cover bg-gray-100"
+                          className="w-14 h-14 rounded-lg object-cover bg-muted"
                         />
                       ) : (
-                        <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center">
-                          <Package className="w-6 h-6 text-gray-400" />
+                        <div className="w-14 h-14 rounded-lg bg-muted flex items-center justify-center">
+                          <Package className="w-6 h-6 text-muted-foreground" />
                         </div>
                       )}
                     </div>
@@ -199,12 +199,12 @@ export default function ProductManagement() {
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
                       {/* Brand/Platform */}
-                      <div className="text-xs font-medium text-gray-600 uppercase mb-0.5">
+                      <div className="text-xs font-medium text-muted-foreground uppercase mb-0.5">
                         {product.platform}
                       </div>
                       
                       {/* Product Title */}
-                      <h4 className="font-medium text-sm text-gray-900 line-clamp-2 mb-1">
+                      <h4 className="font-medium text-sm text-foreground line-clamp-2 mb-1">
                         {product.title}
                       </h4>
                       
@@ -212,21 +212,21 @@ export default function ProductManagement() {
                       <div className="flex items-center gap-2">
                         {/* Discount Percentage */}
                         {product.discountPercentage && (
-                          <div className="flex items-center text-green-600 text-xs font-medium">
+                          <div className="flex items-center text-chart-2 text-xs font-medium">
                             <span className="mr-1">↓</span>{product.discountPercentage}%
                           </div>
                         )}
                         
                         {/* Original Price */}
                         {product.originalPrice && product.discountedPrice && (
-                          <span className="text-xs text-gray-500 line-through">
+                          <span className="text-xs text-muted-foreground line-through">
                             ₹{product.originalPrice}
                           </span>
                         )}
                         
                         {/* Discounted Price */}
                         {product.discountedPrice && (
-                          <span className="font-semibold text-sm text-gray-900">
+                          <span className="font-semibold text-sm text-primary">
                             ₹{product.discountedPrice}
                           </span>
                         )}
@@ -240,10 +240,10 @@ export default function ProductManagement() {
                           variant="ghost" 
                           size="sm"
                           onClick={() => window.open(product.affiliateLink, '_blank')}
-                          className="h-8 w-8 p-0 hover:bg-gray-100"
+                          className="h-8 w-8 p-0 hover:bg-muted"
                           title="View Product"
                         >
-                          <ExternalLink className="w-4 h-4 text-gray-600" />
+                          <ExternalLink className="w-4 h-4 text-muted-foreground hover:text-primary" />
                         </Button>
                       )}
                       
@@ -251,11 +251,11 @@ export default function ProductManagement() {
                         variant="ghost" 
                         size="sm"
                         onClick={() => handleEditProduct(product)}
-                        className="h-8 w-8 p-0 hover:bg-gray-100"
+                        className="h-8 w-8 p-0 hover:bg-muted"
                         title="Edit Product"
                         data-testid={`button-edit-${product.id}`}
                       >
-                        <Edit2 className="w-4 h-4 text-gray-600" />
+                        <Edit2 className="w-4 h-4 text-muted-foreground hover:text-secondary" />
                       </Button>
 
                       <AlertDialog>
@@ -263,10 +263,10 @@ export default function ProductManagement() {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            className="h-8 w-8 p-0 hover:bg-red-50"
+                            className="h-8 w-8 p-0 hover:bg-muted"
                             title="Delete Product"
                           >
-                            <Trash2 className="w-4 h-4 text-red-500" />
+                            <Trash2 className="w-4 h-4 text-destructive hover:text-destructive/80" />
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
