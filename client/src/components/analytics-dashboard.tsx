@@ -237,7 +237,8 @@ export default function AnalyticsDashboard() {
                     tick={{ 
                       fontSize: window.innerWidth < 640 ? 11 : 13,
                       fill: 'hsl(var(--muted-foreground))',
-                      fontWeight: 500
+                      fillOpacity: 0.6,
+                      fontWeight: 400
                     }}
                   />
                   <YAxis 
@@ -249,7 +250,8 @@ export default function AnalyticsDashboard() {
                     tick={{ 
                       fontSize: window.innerWidth < 640 ? 11 : 13,
                       fill: 'hsl(var(--muted-foreground))',
-                      fontWeight: 500
+                      fillOpacity: 0.6,
+                      fontWeight: 400
                     }}
                   />
                   <Tooltip 
