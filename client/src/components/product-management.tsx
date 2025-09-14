@@ -168,7 +168,7 @@ export default function ProductManagement() {
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-base sm:text-lg line-clamp-2 mb-2">
+                        <h4 className="font-semibold text-sm sm:text-base lg:text-lg line-clamp-2 mb-2">
                           {product.title}
                         </h4>
                         <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -189,12 +189,12 @@ export default function ProductManagement() {
                         </div>
                         
                         {/* Pricing */}
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
                           {product.discountedPrice && (
-                            <span className="font-semibold text-primary">₹{product.discountedPrice}</span>
+                            <span className="font-semibold text-primary text-sm sm:text-base">₹{product.discountedPrice}</span>
                           )}
                           {product.originalPrice && product.discountedPrice && (
-                            <span className="text-sm text-muted-foreground line-through">₹{product.originalPrice}</span>
+                            <span className="text-xs sm:text-sm text-muted-foreground line-through">₹{product.originalPrice}</span>
                           )}
                           {product.discountPercentage && (
                             <Badge variant="destructive" className="text-xs">
@@ -205,25 +205,26 @@ export default function ProductManagement() {
 
                         {/* Rating */}
                         {product.rating && (
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground">
+                            <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
                             <span>{product.rating}</span>
                             {product.reviewCount && (
-                              <span>({product.reviewCount} reviews)</span>
+                              <span className="hidden sm:inline">({product.reviewCount} reviews)</span>
                             )}
                           </div>
                         )}
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex gap-2 mt-2 sm:mt-0">
+                      <div className="flex gap-1 sm:gap-2 mt-2 sm:mt-0">
                         {product.affiliateLink && (
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => window.open(product.affiliateLink, '_blank')}
+                            className="p-2"
                           >
-                            <ExternalLink className="w-4 h-4" />
+                            <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
                           </Button>
                         )}
                         
@@ -233,22 +234,23 @@ export default function ProductManagement() {
                               variant="outline" 
                               size="sm"
                               onClick={() => handleEditProduct(product)}
+                              className="p-2"
                             >
-                              <Edit2 className="w-4 h-4" />
+                              <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                            <DialogHeader>
-                              <DialogTitle>Edit Product</DialogTitle>
-                              <DialogDescription>
+                          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto mx-4">
+                            <DialogHeader className="pb-4">
+                              <DialogTitle className="text-base sm:text-lg">Edit Product</DialogTitle>
+                              <DialogDescription className="text-sm">
                                 Update the product information below.
                               </DialogDescription>
                             </DialogHeader>
                             
                             {editingProduct && (
-                              <div className="space-y-4">
+                              <div className="space-y-3 sm:space-y-4">
                                 <div>
-                                  <Label htmlFor="edit-title">Product Title</Label>
+                                  <Label htmlFor="edit-title" className="text-sm">Product Title</Label>
                                   <Input
                                     id="edit-title"
                                     value={editingProduct.title}
@@ -256,11 +258,12 @@ export default function ProductManagement() {
                                       ...editingProduct,
                                       title: e.target.value
                                     })}
+                                    className="text-sm"
                                   />
                                 </div>
                                 
                                 <div>
-                                  <Label htmlFor="edit-description">Description</Label>
+                                  <Label htmlFor="edit-description" className="text-sm">Description</Label>
                                   <Textarea
                                     id="edit-description"
                                     value={editingProduct.description || ""}
@@ -268,12 +271,14 @@ export default function ProductManagement() {
                                       ...editingProduct,
                                       description: e.target.value || null
                                     })}
+                                    className="text-sm"
+                                    rows={3}
                                   />
                                 </div>
                                 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                   <div>
-                                    <Label htmlFor="edit-original-price">Original Price</Label>
+                                    <Label htmlFor="edit-original-price" className="text-sm">Original Price</Label>
                                     <Input
                                       id="edit-original-price"
                                       type="number"
@@ -282,11 +287,12 @@ export default function ProductManagement() {
                                         ...editingProduct,
                                         originalPrice: e.target.value || null
                                       })}
+                                      className="text-sm"
                                     />
                                   </div>
                                   
                                   <div>
-                                    <Label htmlFor="edit-discounted-price">Discounted Price</Label>
+                                    <Label htmlFor="edit-discounted-price" className="text-sm">Discounted Price</Label>
                                     <Input
                                       id="edit-discounted-price"
                                       type="number"
@@ -295,12 +301,13 @@ export default function ProductManagement() {
                                         ...editingProduct,
                                         discountedPrice: e.target.value || null
                                       })}
+                                      className="text-sm"
                                     />
                                   </div>
                                 </div>
                                 
                                 <div>
-                                  <Label htmlFor="edit-image-url">Image URL</Label>
+                                  <Label htmlFor="edit-image-url" className="text-sm">Image URL</Label>
                                   <Input
                                     id="edit-image-url"
                                     value={editingProduct.imageUrl || ""}
@@ -308,11 +315,12 @@ export default function ProductManagement() {
                                       ...editingProduct,
                                       imageUrl: e.target.value || null
                                     })}
+                                    className="text-sm"
                                   />
                                 </div>
                                 
                                 <div>
-                                  <Label htmlFor="edit-affiliate-link">Affiliate Link</Label>
+                                  <Label htmlFor="edit-affiliate-link" className="text-sm">Affiliate Link</Label>
                                   <Input
                                     id="edit-affiliate-link"
                                     value={editingProduct.affiliateLink}
@@ -320,12 +328,13 @@ export default function ProductManagement() {
                                       ...editingProduct,
                                       affiliateLink: e.target.value
                                     })}
+                                    className="text-sm"
                                   />
                                 </div>
                                 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                   <div>
-                                    <Label htmlFor="edit-platform">Platform</Label>
+                                    <Label htmlFor="edit-platform" className="text-sm">Platform</Label>
                                     <Input
                                       id="edit-platform"
                                       value={editingProduct.platform}
@@ -333,11 +342,12 @@ export default function ProductManagement() {
                                         ...editingProduct,
                                         platform: e.target.value
                                       })}
+                                      className="text-sm"
                                     />
                                   </div>
                                   
                                   <div>
-                                    <Label htmlFor="edit-category">Category</Label>
+                                    <Label htmlFor="edit-category" className="text-sm">Category</Label>
                                     <Input
                                       id="edit-category"
                                       value={editingProduct.category || ""}
@@ -345,11 +355,12 @@ export default function ProductManagement() {
                                         ...editingProduct,
                                         category: e.target.value || null
                                       })}
+                                      className="text-sm"
                                     />
                                   </div>
                                 </div>
                                 
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center space-x-2 p-3 border rounded-lg">
                                   <Switch
                                     id="edit-featured"
                                     checked={editingProduct.featured || false}
@@ -358,22 +369,24 @@ export default function ProductManagement() {
                                       featured: checked
                                     })}
                                   />
-                                  <Label htmlFor="edit-featured">Featured Product</Label>
+                                  <Label htmlFor="edit-featured" className="text-sm">Featured Product</Label>
                                 </div>
                               </div>
                             )}
                             
-                            <DialogFooter>
+                            <DialogFooter className="flex flex-col sm:flex-row gap-2 pt-4">
                               <Button 
                                 variant="outline" 
                                 onClick={() => setIsEditDialogOpen(false)}
                                 disabled={updateProductMutation.isPending}
+                                className="text-sm"
                               >
                                 Cancel
                               </Button>
                               <Button 
                                 onClick={handleSaveEdit}
                                 disabled={updateProductMutation.isPending}
+                                className="text-sm"
                               >
                                 {updateProductMutation.isPending ? "Saving..." : "Save Changes"}
                               </Button>
@@ -383,8 +396,8 @@ export default function ProductManagement() {
 
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm">
-                              <Trash2 className="w-4 h-4" />
+                            <Button variant="destructive" size="sm" className="p-2">
+                              <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>

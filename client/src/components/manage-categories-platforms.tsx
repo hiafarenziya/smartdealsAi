@@ -207,49 +207,50 @@ export function ManageCategoriesPlatforms() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Globe className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">Manage Categories & Platforms</h1>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex items-center gap-2 px-1">
+        <Globe className="h-5 w-5 sm:h-6 sm:w-6" />
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-bold">Manage Categories & Platforms</h1>
       </div>
 
-      <Tabs defaultValue="categories" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="categories" data-testid="tab-categories">
-            <Tag className="h-4 w-4 mr-2" />
-            Categories
+      <Tabs defaultValue="categories" className="space-y-4 sm:space-y-6">
+        <TabsList className="grid w-full grid-cols-2 h-auto">
+          <TabsTrigger value="categories" data-testid="tab-categories" className="flex items-center gap-1 sm:gap-2 py-2 sm:py-3">
+            <Tag className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="text-xs sm:text-sm">Categories</span>
           </TabsTrigger>
-          <TabsTrigger value="platforms" data-testid="tab-platforms">
-            <Globe className="h-4 w-4 mr-2" />
-            Platforms
+          <TabsTrigger value="platforms" data-testid="tab-platforms" className="flex items-center gap-1 sm:gap-2 py-2 sm:py-3">
+            <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="text-xs sm:text-sm">Platforms</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="categories" className="space-y-6">
+        <TabsContent value="categories" className="space-y-4 sm:space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base lg:text-lg">
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                 {editingCategory ? "Edit Category" : "Add New Category"}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 {editingCategory ? "Update category information" : "Create a new product category"}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <Form {...categoryForm}>
-                <form onSubmit={categoryForm.handleSubmit(handleCategorySubmit)} className="space-y-4">
+                <form onSubmit={categoryForm.handleSubmit(handleCategorySubmit)} className="space-y-3 sm:space-y-4">
                   <FormField
                     control={categoryForm.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Category Name</FormLabel>
+                        <FormLabel className="text-sm">Category Name</FormLabel>
                         <FormControl>
                           <Input 
                             placeholder="e.g., Electronics, Fashion, Sports" 
                             {...field} 
                             data-testid="input-category-name"
+                            className="text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -262,13 +263,14 @@ export function ManageCategoriesPlatforms() {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description (Optional)</FormLabel>
+                        <FormLabel className="text-sm">Description (Optional)</FormLabel>
                         <FormControl>
                           <Textarea 
                             placeholder="Brief description of this category"
-                            rows={3}
+                            rows={2}
                             {...field}
                             data-testid="input-category-description"
+                            className="text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -281,9 +283,9 @@ export function ManageCategoriesPlatforms() {
                     name="isActive"
                     render={({ field }) => (
                       <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                        <div className="space-y-0.5">
-                          <FormLabel>Active</FormLabel>
-                          <FormDescription>
+                        <div className="space-y-0.5 flex-1 min-w-0">
+                          <FormLabel className="text-sm">Active</FormLabel>
+                          <FormDescription className="text-xs">
                             Active categories will appear in product filters and forms
                           </FormDescription>
                         </div>
@@ -298,11 +300,12 @@ export function ManageCategoriesPlatforms() {
                     )}
                   />
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
                     <Button 
                       type="submit" 
                       disabled={createCategoryMutation.isPending || updateCategoryMutation.isPending}
                       data-testid="button-save-category"
+                      className="text-sm"
                     >
                       {editingCategory ? "Update Category" : "Create Category"}
                     </Button>
@@ -312,6 +315,7 @@ export function ManageCategoriesPlatforms() {
                         variant="outline" 
                         onClick={cancelCategoryEditing}
                         data-testid="button-cancel-category"
+                        className="text-sm"
                       >
                         Cancel
                       </Button>
@@ -323,46 +327,46 @@ export function ManageCategoriesPlatforms() {
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>Existing Categories</CardTitle>
-              <CardDescription>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-sm sm:text-base lg:text-lg">Existing Categories</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Manage your product categories. Active categories will appear in filters.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="pt-0">
+              <div className="space-y-3 sm:space-y-4">
                 {categories.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-8">No categories found</p>
+                  <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm">No categories found</p>
                 ) : (
                   categories.map((category) => (
                     <div
                       key={category.id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg gap-3 sm:gap-0"
                       data-testid={`card-category-${category.id}`}
                     >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium" data-testid={`text-category-name-${category.id}`}>
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-medium text-sm sm:text-base" data-testid={`text-category-name-${category.id}`}>
                             {category.name}
                           </h3>
-                          <Badge variant={category.isActive ? "default" : "secondary"}>
+                          <Badge variant={category.isActive ? "default" : "secondary"} className="text-xs">
                             {category.isActive ? "Active" : "Inactive"}
                           </Badge>
                         </div>
                         {category.description && (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
                             {category.description}
                           </p>
                         )}
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 self-start sm:self-center flex-shrink-0">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => startEditingCategory(category)}
                           data-testid={`button-edit-category-${category.id}`}
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                         <Button
                           variant="outline"
@@ -371,7 +375,7 @@ export function ManageCategoriesPlatforms() {
                           disabled={deleteCategoryMutation.isPending}
                           data-testid={`button-delete-category-${category.id}`}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                       </div>
                     </div>
@@ -382,31 +386,32 @@ export function ManageCategoriesPlatforms() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="platforms" className="space-y-6">
+        <TabsContent value="platforms" className="space-y-4 sm:space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="flex items-center gap-2 text-sm sm:text-base lg:text-lg">
+                <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                 {editingPlatform ? "Edit Platform" : "Add New Platform"}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 {editingPlatform ? "Update platform information" : "Add a new e-commerce platform"}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <Form {...platformForm}>
-                <form onSubmit={platformForm.handleSubmit(handlePlatformSubmit)} className="space-y-4">
+                <form onSubmit={platformForm.handleSubmit(handlePlatformSubmit)} className="space-y-3 sm:space-y-4">
                   <FormField
                     control={platformForm.control}
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Platform Name</FormLabel>
+                        <FormLabel className="text-sm">Platform Name</FormLabel>
                         <FormControl>
                           <Input 
                             placeholder="e.g., Amazon, Flipkart, Myntra" 
                             {...field} 
                             data-testid="input-platform-name"
+                            className="text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -419,12 +424,13 @@ export function ManageCategoriesPlatforms() {
                     name="icon"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Icon (Emoji)</FormLabel>
+                        <FormLabel className="text-sm">Icon (Emoji)</FormLabel>
                         <FormControl>
                           <Input 
                             placeholder="🛒 🛍️ 👕" 
                             {...field} 
                             data-testid="input-platform-icon"
+                            className="text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -437,12 +443,13 @@ export function ManageCategoriesPlatforms() {
                     name="color"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Brand Color</FormLabel>
+                        <FormLabel className="text-sm">Brand Color</FormLabel>
                         <FormControl>
                           <Input 
                             placeholder="#FF9900" 
                             {...field} 
                             data-testid="input-platform-color"
+                            className="text-sm"
                           />
                         </FormControl>
                         <FormMessage />
@@ -455,9 +462,9 @@ export function ManageCategoriesPlatforms() {
                     name="isActive"
                     render={({ field }) => (
                       <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                        <div className="space-y-0.5">
-                          <FormLabel>Active</FormLabel>
-                          <FormDescription>
+                        <div className="space-y-0.5 flex-1 min-w-0">
+                          <FormLabel className="text-sm">Active</FormLabel>
+                          <FormDescription className="text-xs">
                             Active platforms will appear in product filters and forms
                           </FormDescription>
                         </div>
@@ -472,11 +479,12 @@ export function ManageCategoriesPlatforms() {
                     )}
                   />
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
                     <Button 
                       type="submit" 
                       disabled={createPlatformMutation.isPending || updatePlatformMutation.isPending}
                       data-testid="button-save-platform"
+                      className="text-sm"
                     >
                       {editingPlatform ? "Update Platform" : "Create Platform"}
                     </Button>
@@ -486,6 +494,7 @@ export function ManageCategoriesPlatforms() {
                         variant="outline" 
                         onClick={cancelPlatformEditing}
                         data-testid="button-cancel-platform"
+                        className="text-sm"
                       >
                         Cancel
                       </Button>
@@ -497,48 +506,48 @@ export function ManageCategoriesPlatforms() {
           </Card>
 
           <Card>
-            <CardHeader>
-              <CardTitle>Existing Platforms</CardTitle>
-              <CardDescription>
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-sm sm:text-base lg:text-lg">Existing Platforms</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Manage your e-commerce platforms. Active platforms will appear in filters.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="pt-0">
+              <div className="space-y-3 sm:space-y-4">
                 {platforms.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-8">No platforms found</p>
+                  <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm">No platforms found</p>
                 ) : (
                   platforms.map((platform) => (
                     <div
                       key={platform.id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg gap-3 sm:gap-0"
                       data-testid={`card-platform-${platform.id}`}
                     >
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          {platform.icon && <span className="text-lg">{platform.icon}</span>}
-                          <h3 className="font-medium" data-testid={`text-platform-name-${platform.id}`}>
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {platform.icon && <span className="text-base sm:text-lg">{platform.icon}</span>}
+                          <h3 className="font-medium text-sm sm:text-base" data-testid={`text-platform-name-${platform.id}`}>
                             {platform.name}
                           </h3>
-                          <Badge variant={platform.isActive ? "default" : "secondary"}>
+                          <Badge variant={platform.isActive ? "default" : "secondary"} className="text-xs">
                             {platform.isActive ? "Active" : "Inactive"}
                           </Badge>
                           {platform.color && (
                             <div 
-                              className="w-4 h-4 rounded-full border"
+                              className="w-3 h-3 sm:w-4 sm:h-4 rounded-full border"
                               style={{ backgroundColor: platform.color }}
                             />
                           )}
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 self-start sm:self-center flex-shrink-0">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => startEditingPlatform(platform)}
                           data-testid={`button-edit-platform-${platform.id}`}
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                         <Button
                           variant="outline"
@@ -547,7 +556,7 @@ export function ManageCategoriesPlatforms() {
                           disabled={deletePlatformMutation.isPending}
                           data-testid={`button-delete-platform-${platform.id}`}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                         </Button>
                       </div>
                     </div>
