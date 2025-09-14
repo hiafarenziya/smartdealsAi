@@ -19,16 +19,16 @@ export default function ProductCard({ product }: ProductCardProps) {
     const stars = [];
 
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />);
+      stars.push(<Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />);
     }
 
     if (hasHalfStar) {
-      stars.push(<StarHalf key="half" className="w-4 h-4 fill-yellow-400 text-yellow-400" />);
+      stars.push(<StarHalf key="half" className="w-3 h-3 fill-yellow-400 text-yellow-400" />);
     }
 
     const remainingStars = 5 - Math.ceil(numRating);
     for (let i = 0; i < remainingStars; i++) {
-      stars.push(<Star key={`empty-${i}`} className="w-4 h-4 text-yellow-400" />);
+      stars.push(<Star key={`empty-${i}`} className="w-3 h-3 text-yellow-400" />);
     }
 
     return stars;
@@ -92,7 +92,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {renderStars(product.rating)}
             </div>
             {product.reviewCount && (
-              <span className="text-xs text-muted-foreground" data-testid={`review-count-${product.id}`}>
+              <span className="text-[10px] text-muted-foreground" data-testid={`review-count-${product.id}`}>
                 ({product.reviewCount})
               </span>
             )}
