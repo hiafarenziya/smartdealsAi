@@ -371,7 +371,7 @@ export default function Products() {
               data-testid="products-container"
             >
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} viewMode={viewMode} />
               ))}
             </div>
           ) : (
