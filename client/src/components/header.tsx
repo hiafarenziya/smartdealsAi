@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Menu, X, Bot, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 glass-effect border-b border-border">
@@ -34,9 +36,11 @@ export default function Header() {
             <Link href="/about" className="text-foreground hover:text-primary transition-colors font-medium text-sm xl:text-base" data-testid="nav-about">
               About
             </Link>
-            <Link href="/admin" className="text-muted-foreground hover:text-primary transition-colors text-xs xl:text-sm" data-testid="nav-admin">
-              Admin
-            </Link>
+            {isAuthenticated && (
+              <Link href="/admin" className="text-muted-foreground hover:text-primary transition-colors text-xs xl:text-sm" data-testid="nav-admin">
+                Admin
+              </Link>
+            )}
           </nav>
           
           {/* Desktop Contact Button & Mobile Menu */}
@@ -93,14 +97,16 @@ export default function Header() {
               >
                 About
               </Link>
-              <Link 
-                href="/admin" 
-                className="text-muted-foreground hover:text-primary transition-colors text-sm py-2 px-2 rounded-lg hover:bg-muted/50" 
-                data-testid="mobile-nav-admin"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Admin
-              </Link>
+              {isAuthenticated && (
+                <Link 
+                  href="/admin" 
+                  className="text-muted-foreground hover:text-primary transition-colors text-sm py-2 px-2 rounded-lg hover:bg-muted/50" 
+                  data-testid="mobile-nav-admin"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              )}
               
               {/* Mobile Contact Us */}
               <a 
