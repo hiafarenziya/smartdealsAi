@@ -42,66 +42,66 @@ export default function AnalyticsDashboard() {
   return (
     <div className="space-y-6" data-testid="analytics-dashboard">
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         <Card className="glass-effect border-border">
-          <CardContent className="p-4 sm:p-6">
+          <CardContent className="p-3 sm:p-4 lg:p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Products</p>
-                <p className="text-2xl sm:text-3xl font-bold text-primary" data-testid="total-products">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Total Products</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary" data-testid="total-products">
                   {analytics.totalProducts}
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center flex-shrink-0">
+                <Package className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="glass-effect border-border">
-          <CardContent className="p-4 sm:p-6">
+          <CardContent className="p-3 sm:p-4 lg:p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Featured Products</p>
-                <p className="text-2xl sm:text-3xl font-bold text-secondary" data-testid="featured-products">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Featured Products</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary" data-testid="featured-products">
                   {analytics.featuredProducts}
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center">
-                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="glass-effect border-border">
-          <CardContent className="p-4 sm:p-6">
+          <CardContent className="p-3 sm:p-4 lg:p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Avg. Discount</p>
-                <p className="text-2xl sm:text-3xl font-bold text-accent" data-testid="avg-discount">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Avg. Discount</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-accent" data-testid="avg-discount">
                   {analytics.averageDiscount.toFixed(1)}%
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-accent to-orange-500 rounded-lg flex items-center justify-center">
-                <Percent className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-accent to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Percent className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="glass-effect border-border">
-          <CardContent className="p-4 sm:p-6">
+          <CardContent className="p-3 sm:p-4 lg:p-6">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Active Platforms</p>
-                <p className="text-2xl sm:text-3xl font-bold text-primary" data-testid="active-platforms">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Active Platforms</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary" data-testid="active-platforms">
                   {analytics.platformDistribution.length}
                 </p>
               </div>
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-lg flex items-center justify-center">
-                <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
+                <Target className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
@@ -109,18 +109,18 @@ export default function AnalyticsDashboard() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Platform Distribution */}
         <Card className="glass-effect border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <ShoppingCart className="mr-2 w-5 h-5 text-primary" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center text-sm sm:text-base lg:text-lg">
+              <ShoppingCart className="mr-2 w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               Platform Distribution
             </CardTitle>
-            <CardDescription>Products by platform</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">Products by platform</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="h-64 sm:h-80">
+          <CardContent className="pt-0">
+            <div className="h-48 sm:h-64 lg:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -129,7 +129,7 @@ export default function AnalyticsDashboard() {
                     cy="50%"
                     labelLine={false}
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
+                    outerRadius={window.innerWidth < 640 ? 60 : window.innerWidth < 1024 ? 70 : 80}
                     fill="#8884d8"
                     dataKey="value"
                   >
@@ -146,28 +146,31 @@ export default function AnalyticsDashboard() {
 
         {/* Category Distribution */}
         <Card className="glass-effect border-border">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <TrendingUp className="mr-2 w-5 h-5 text-secondary" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center text-sm sm:text-base lg:text-lg">
+              <TrendingUp className="mr-2 w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
               Category Performance
             </CardTitle>
-            <CardDescription>Products by category</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">Products by category</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="h-64 sm:h-80">
+          <CardContent className="pt-0">
+            <div className="h-48 sm:h-64 lg:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={analytics.categoryDistribution}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis 
                     dataKey="name" 
                     stroke="hsl(var(--muted-foreground))" 
-                    fontSize={12}
+                    fontSize={window.innerWidth < 640 ? 10 : 12}
                     tickLine={false}
                     axisLine={false}
+                    angle={window.innerWidth < 640 ? -45 : 0}
+                    textAnchor={window.innerWidth < 640 ? 'end' : 'middle'}
+                    height={window.innerWidth < 640 ? 60 : 30}
                   />
                   <YAxis 
                     stroke="hsl(var(--muted-foreground))" 
-                    fontSize={12}
+                    fontSize={window.innerWidth < 640 ? 10 : 12}
                     tickLine={false}
                     axisLine={false}
                   />
@@ -188,28 +191,28 @@ export default function AnalyticsDashboard() {
 
       {/* Recent Products */}
       <Card className="glass-effect border-border">
-        <CardHeader>
-          <CardTitle>Recently Added Products</CardTitle>
-          <CardDescription>Latest products added to the catalog</CardDescription>
+        <CardHeader className="pb-3 sm:pb-6">
+          <CardTitle className="text-sm sm:text-base lg:text-lg">Recently Added Products</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">Latest products added to the catalog</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           <div className="space-y-3">
             {analytics.recentlyAdded.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">No products added yet</p>
+              <p className="text-muted-foreground text-center py-6 sm:py-8 text-sm">No products added yet</p>
             ) : (
               analytics.recentlyAdded.map((product) => (
-                <div key={product.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border border-border/50">
-                  <div className="flex items-center space-x-3">
+                <div key={product.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-muted/30 rounded-lg border border-border/50 gap-3 sm:gap-0">
+                  <div className="flex items-center space-x-3 min-w-0 flex-1">
                     {product.imageUrl && (
                       <img 
                         src={product.imageUrl} 
                         alt={product.title}
-                        className="w-10 h-10 rounded-lg object-cover bg-muted"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover bg-muted flex-shrink-0"
                       />
                     )}
-                    <div>
-                      <p className="font-medium text-sm line-clamp-1">{product.title}</p>
-                      <div className="flex items-center space-x-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-xs sm:text-sm line-clamp-1 sm:line-clamp-2">{product.title}</p>
+                      <div className="flex items-center space-x-2 mt-1">
                         <Badge variant="outline" className="text-xs">
                           {product.platform}
                         </Badge>
@@ -222,9 +225,9 @@ export default function AnalyticsDashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right flex-shrink-0">
                     {product.discountedPrice && (
-                      <p className="font-semibold text-primary">₹{product.discountedPrice}</p>
+                      <p className="font-semibold text-primary text-sm sm:text-base">₹{product.discountedPrice}</p>
                     )}
                     {product.originalPrice && product.discountedPrice && (
                       <p className="text-xs text-muted-foreground line-through">₹{product.originalPrice}</p>
