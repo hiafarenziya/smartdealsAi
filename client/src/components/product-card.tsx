@@ -135,7 +135,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           data-testid={`view-deal-button-${product.id}`}
         >
           <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
-          <span className="whitespace-nowrap truncate">{getPlatformButtonText(product.platform)}</span>
+          <span className="whitespace-nowrap truncate">View On Amazon, Flipkart, Myntra</span>
         </Button>
       </div>
     </div>
