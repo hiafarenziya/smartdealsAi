@@ -19,7 +19,7 @@ export default function Header() {
               <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate">
                 Smart Deals AI
               </h1>
-              <p className="text-xs text-muted-foreground hidden sm:block">Powered by iajaykumar.com</p>
+              <p className="text-xs sm:text-xs text-muted-foreground">Powered by iajaykumar.com</p>
             </div>
           </Link>
           
