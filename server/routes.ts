@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProductSchema, insertContactSchema } from "@shared/schema";
+import { insertProductSchema, insertContactSchema, type Product } from "@shared/schema";
 import { sendEmail } from "./services/email";
 import bcrypt from "bcrypt";
 
@@ -102,21 +102,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Analytics endpoints
   app.get("/api/analytics/overview", async (req, res) => {
     try {
-      const products = await storage.getProducts({});
+      const products = await storage.getAllProducts();
       
       const totalProducts = products.length;
-      const featuredProducts = products.filter(p => p.featured).length;
+      const featuredProducts = products.filter((p: Product) => p.featured).length;
       const avgDiscount = products
-        .filter(p => p.originalPrice && p.discountedPrice)
-        .reduce((sum, p) => sum + ((p.originalPrice! - p.discountedPrice!) / p.originalPrice!) * 100, 0) / 
-        products.filter(p => p.originalPrice && p.discountedPrice).length || 0;
+        .filter((p: Product) => p.originalPrice && p.discountedPrice)
+        .reduce((sum: number, p: Product) => {
+          const originalPrice = parseFloat(p.originalPrice!);
+          const discountedPrice = parseFloat(p.discountedPrice!);
+          return sum + ((originalPrice - discountedPrice) / originalPrice) * 100;
+        }, 0) / products.filter((p: Product) => p.originalPrice && p.discountedPrice).length || 0;
       
-      const platformStats = products.reduce((acc, product) => {
+      const platformStats = products.reduce((acc: Record<string, number>, product: Product) => {
         acc[product.platform] = (acc[product.platform] || 0) + 1;
         return acc;
       }, {} as Record<string, number>);
       
-      const categoryStats = products.reduce((acc, product) => {
+      const categoryStats = products.reduce((acc: Record<string, number>, product: Product) => {
         if (product.category) {
           acc[product.category] = (acc[product.category] || 0) + 1;
         }
