@@ -60,6 +60,19 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const getShortPlatformButtonText = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case 'amazon':
+        return 'Amazon';
+      case 'flipkart':
+        return 'Flipkart';
+      case 'myntra':
+        return 'Myntra';
+      default:
+        return 'Deal';
+    }
+  };
+
   const getPlatformButtonStyle = (platform: string) => {
     switch (platform.toLowerCase()) {
       case 'amazon':
@@ -134,7 +147,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           data-testid={`view-deal-button-${product.id}`}
         >
           <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
-          <span className="md:hidden whitespace-nowrap">View Deal</span>
+          <span className="md:hidden whitespace-nowrap">{getShortPlatformButtonText(product.platform)}</span>
           <span className="hidden md:inline whitespace-nowrap truncate">{getPlatformButtonText(product.platform)}</span>
         </Button>
       </div>
