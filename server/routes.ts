@@ -5,10 +5,9 @@ import { insertProductSchema, insertContactSchema, insertCategorySchema, insertP
 import { sendEmail } from "./services/email";
 import bcrypt from "bcrypt";
 
-// Generate a proper bcrypt hash for the default admin password
-// Default password: "admin123" (should be changed in production)
-const ADMIN_USERNAME = "admin";
-const ADMIN_PASSWORD_HASH = "$2b$10$K6h1dCJaL2p7.QJ5FcYOZeXgJ7Vq1M2N3O4P5Q6R7S8T9U0V1W2X3Y"; // Hash for "admin123"
+// Admin credentials for Smart Deals AI
+const ADMIN_USERNAME = "afarenziya@gmail.com";
+const ADMIN_PASSWORD_HASH = "$2b$10$LXoeQkAOr//rbDsRGHj2qO7twRNN3HLVjRS.oQYZFPY38gdmC4W3."; // Hash for secure password
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
