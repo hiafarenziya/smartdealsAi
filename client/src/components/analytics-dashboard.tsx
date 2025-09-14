@@ -201,8 +201,16 @@ export default function AnalyticsDashboard() {
             <div className="h-56 sm:h-64 lg:h-80 mb-4">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart 
-                  data={analytics.categoryDistribution}
-                  margin={{ top: 10, right: 10, left: 10, bottom: window.innerWidth < 640 ? 50 : 20 }}
+                  data={analytics.categoryDistribution.map(item => ({ 
+                    ...item, 
+                    shortName: item.name.length > 8 ? item.name.substring(0, 8) + '...' : item.name 
+                  }))}
+                  margin={{ 
+                    top: 20, 
+                    right: 20, 
+                    left: 20, 
+                    bottom: window.innerWidth < 640 ? 80 : 60 
+                  }}
                 >
                   <defs>
                     <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
@@ -213,26 +221,36 @@ export default function AnalyticsDashboard() {
                   <CartesianGrid 
                     strokeDasharray="3 3" 
                     stroke="hsl(var(--border))" 
-                    strokeOpacity={0.3}
+                    strokeOpacity={0.2}
                     vertical={false}
                   />
                   <XAxis 
-                    dataKey="name" 
+                    dataKey="shortName" 
                     stroke="hsl(var(--muted-foreground))" 
                     fontSize={window.innerWidth < 640 ? 11 : 13}
                     tickLine={false}
                     axisLine={false}
-                    angle={window.innerWidth < 640 ? -35 : 0}
-                    textAnchor={window.innerWidth < 640 ? 'end' : 'middle'}
-                    height={window.innerWidth < 640 ? 60 : 35}
+                    angle={-45}
+                    textAnchor="end"
+                    height={window.innerWidth < 640 ? 80 : 60}
                     interval={0}
+                    tick={{ 
+                      fontSize: window.innerWidth < 640 ? 11 : 13,
+                      fill: 'hsl(var(--muted-foreground))',
+                      fontWeight: 500
+                    }}
                   />
                   <YAxis 
                     stroke="hsl(var(--muted-foreground))" 
                     fontSize={window.innerWidth < 640 ? 11 : 13}
                     tickLine={false}
                     axisLine={false}
-                    width={40}
+                    width={50}
+                    tick={{ 
+                      fontSize: window.innerWidth < 640 ? 11 : 13,
+                      fill: 'hsl(var(--muted-foreground))',
+                      fontWeight: 500
+                    }}
                   />
                   <Tooltip 
                     contentStyle={{
@@ -240,15 +258,27 @@ export default function AnalyticsDashboard() {
                       border: "1px solid hsl(var(--border))",
                       borderRadius: "12px",
                       boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-                      color: "hsl(var(--foreground))"
+                      color: "hsl(var(--foreground))",
+                      fontSize: '14px',
+                      fontWeight: 500
                     }}
                     cursor={{ fill: 'hsl(var(--muted))', fillOpacity: 0.1 }}
+                    labelFormatter={(label) => {
+                      const originalItem = analytics.categoryDistribution.find(item => 
+                        item.name.startsWith(label.replace('...', ''))
+                      );
+                      return originalItem ? originalItem.name : label;
+                    }}
+                    formatter={(value) => [
+                      `${value} Products`,
+                      'Category Count'
+                    ]}
                   />
                   <Bar 
                     dataKey="value" 
                     fill="url(#barGradient)" 
-                    radius={[6, 6, 0, 0]}
-                    maxBarSize={60}
+                    radius={[8, 8, 0, 0]}
+                    maxBarSize={window.innerWidth < 640 ? 40 : 50}
                   >
                     {analytics.categoryDistribution.map((_, index) => (
                       <Cell 
