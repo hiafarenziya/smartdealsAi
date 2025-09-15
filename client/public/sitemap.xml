@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  <!-- Homepage -->
+  <url>
+    <loc>https://smart-deals-ai.replit.app/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <!-- Products Page -->
+  <url>
+    <loc>https://smart-deals-ai.replit.app/products</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <!-- Platform-specific product pages -->
+  <url>
+    <loc>https://smart-deals-ai.replit.app/products?platform=Amazon</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://smart-deals-ai.replit.app/products?platform=Flipkart</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://smart-deals-ai.replit.app/products?platform=Myntra</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <!-- Legal Pages -->
+  <url>
+    <loc>https://smart-deals-ai.replit.app/privacy-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://smart-deals-ai.replit.app/terms-of-service</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://smart-deals-ai.replit.app/affiliate-disclosure</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://smart-deals-ai.replit.app/refund-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://smart-deals-ai.replit.app/cookie-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <lastmod>2025-09-14</lastmod>
+  </url>
+</urlset>
