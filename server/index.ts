@@ -1,10 +1,23 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { checkDatabaseConnection } from "./db";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Check database connection on startup
+checkDatabaseConnection().catch(console.error);
+
+// Add health check endpoint
+app.get('/health', async (req, res) => {
+  const isDbConnected = await checkDatabaseConnection();
+  res.json({ 
+    status: 'ok',
+    database: isDbConnected ? 'connected' : 'disconnected'
+  });
+});
 
 // Security headers for safe external image loading
 app.use((req, res, next) => {

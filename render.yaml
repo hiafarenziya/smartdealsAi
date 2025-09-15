@@ -6,6 +6,8 @@ services:
     buildCommand: npm run build
     postDeployCommand: node scripts/setup-db.js && npx -y drizzle-kit@0.30.6 push
     startCommand: npm start
+    healthCheckPath: /health
+    healthCheckTimeout: 100
     envVars:
       - key: NODE_ENV
         value: production
