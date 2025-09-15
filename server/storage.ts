@@ -1,7 +1,7 @@
 import { type User, type InsertUser, type Product, type InsertProduct, type Contact, type InsertContact, type Category, type InsertCategory, type Platform, type InsertPlatform, users, products, contacts, categories, platforms } from "@shared/schema";
 import { randomUUID } from "crypto";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import { eq, and, or, ilike, desc, asc } from "drizzle-orm";
 
 export interface IStorage {
@@ -524,7 +524,10 @@ export class DatabaseStorage implements IStorage {
   private db: any;
 
   constructor() {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    const pool = new Pool({ 
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false }
+    });
     this.db = drizzle(pool);
   }
 
