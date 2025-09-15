@@ -1,5 +1,8 @@
-import { type User, type InsertUser, type Product, type InsertProduct, type Contact, type InsertContact, type Category, type InsertCategory, type Platform, type InsertPlatform } from "@shared/schema";
+import { type User, type InsertUser, type Product, type InsertProduct, type Contact, type InsertContact, type Category, type InsertCategory, type Platform, type InsertPlatform, users, products, contacts, categories, platforms } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+import { eq, and, or, ilike, desc, asc } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -516,4 +519,364 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  private db: any;
+
+  constructor() {
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    this.db = drizzle(pool);
+  }
+
+  // User methods
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const result = await this.db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  // Product methods
+  async getAllProducts(): Promise<Product[]> {
+    return await this.db.select().from(products).orderBy(desc(products.createdAt));
+  }
+
+  async getProduct(id: string): Promise<Product | undefined> {
+    const result = await this.db.select().from(products).where(eq(products.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getProductsByPlatform(platform: string): Promise<Product[]> {
+    return await this.db.select().from(products).where(ilike(products.platform, platform));
+  }
+
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    return await this.db.select().from(products).where(ilike(products.category, category));
+  }
+
+  async searchProducts(query: string): Promise<Product[]> {
+    const searchPattern = `%${query}%`;
+    return await this.db.select().from(products).where(
+      or(
+        ilike(products.title, searchPattern),
+        ilike(products.description, searchPattern),
+        ilike(products.category, searchPattern),
+        ilike(products.platform, searchPattern)
+      )
+    );
+  }
+
+  async getProductsWithFilters(filters: {
+    platform?: string;
+    category?: string;
+    search?: string;
+    featured?: boolean;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: 'price_low' | 'price_high' | 'rating' | 'newest' | 'popular';
+  }): Promise<Product[]> {
+    let query = this.db.select().from(products);
+    const conditions = [];
+
+    if (filters.platform) {
+      conditions.push(ilike(products.platform, filters.platform));
+    }
+
+    if (filters.category) {
+      conditions.push(ilike(products.category, filters.category));
+    }
+
+    if (filters.featured !== undefined) {
+      conditions.push(eq(products.featured, filters.featured));
+    }
+
+    if (filters.search) {
+      const searchPattern = `%${filters.search}%`;
+      conditions.push(
+        or(
+          ilike(products.title, searchPattern),
+          ilike(products.description, searchPattern),
+          ilike(products.category, searchPattern),
+          ilike(products.platform, searchPattern)
+        )
+      );
+    }
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+
+    // Apply sorting
+    switch (filters.sortBy) {
+      case 'price_low':
+        query = query.orderBy(asc(products.discountedPrice));
+        break;
+      case 'price_high':
+        query = query.orderBy(desc(products.discountedPrice));
+        break;
+      case 'rating':
+        query = query.orderBy(desc(products.rating));
+        break;
+      case 'newest':
+      default:
+        query = query.orderBy(desc(products.createdAt));
+        break;
+    }
+
+    const results = await query;
+
+    // Apply price filtering (post-query for decimal comparison)
+    if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+      return results.filter(product => {
+        const price = parseFloat(product.discountedPrice || product.originalPrice || "0");
+        if (filters.minPrice !== undefined && price < filters.minPrice) return false;
+        if (filters.maxPrice !== undefined && price > filters.maxPrice) return false;
+        return true;
+      });
+    }
+
+    return results;
+  }
+
+  async createProduct(insertProduct: InsertProduct): Promise<Product> {
+    const result = await this.db.insert(products).values(insertProduct).returning();
+    return result[0];
+  }
+
+  async updateProduct(id: string, updateData: Partial<InsertProduct>): Promise<Product | undefined> {
+    const result = await this.db.update(products)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(products.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteProduct(id: string): Promise<boolean> {
+    const result = await this.db.delete(products).where(eq(products.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getFeaturedProducts(): Promise<Product[]> {
+    return await this.db.select().from(products).where(eq(products.featured, true));
+  }
+
+  // Contact methods
+  async createContact(insertContact: InsertContact): Promise<Contact> {
+    const result = await this.db.insert(contacts).values(insertContact).returning();
+    return result[0];
+  }
+
+  async getAllContacts(): Promise<Contact[]> {
+    return await this.db.select().from(contacts).orderBy(desc(contacts.createdAt));
+  }
+
+  // Category methods
+  async getAllCategories(): Promise<Category[]> {
+    return await this.db.select().from(categories).orderBy(asc(categories.name));
+  }
+
+  async getActiveCategories(): Promise<Category[]> {
+    return await this.db.select().from(categories)
+      .where(eq(categories.isActive, true))
+      .orderBy(asc(categories.name));
+  }
+
+  async getCategory(id: string): Promise<Category | undefined> {
+    const result = await this.db.select().from(categories).where(eq(categories.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    const result = await this.db.insert(categories).values(insertCategory).returning();
+    return result[0];
+  }
+
+  async updateCategory(id: string, updateData: Partial<InsertCategory>): Promise<Category | undefined> {
+    const result = await this.db.update(categories)
+      .set(updateData)
+      .where(eq(categories.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteCategory(id: string): Promise<boolean> {
+    const result = await this.db.delete(categories).where(eq(categories.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Platform methods
+  async getAllPlatforms(): Promise<Platform[]> {
+    return await this.db.select().from(platforms).orderBy(asc(platforms.name));
+  }
+
+  async getActivePlatforms(): Promise<Platform[]> {
+    return await this.db.select().from(platforms)
+      .where(eq(platforms.isActive, true))
+      .orderBy(asc(platforms.name));
+  }
+
+  async getPlatform(id: string): Promise<Platform | undefined> {
+    const result = await this.db.select().from(platforms).where(eq(platforms.id, id)).limit(1);
+    return result[0];
+  }
+
+  async createPlatform(insertPlatform: InsertPlatform): Promise<Platform> {
+    const result = await this.db.insert(platforms).values(insertPlatform).returning();
+    return result[0];
+  }
+
+  async updatePlatform(id: string, updateData: Partial<InsertPlatform>): Promise<Platform | undefined> {
+    const result = await this.db.update(platforms)
+      .set(updateData)
+      .where(eq(platforms.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deletePlatform(id: string): Promise<boolean> {
+    const result = await this.db.delete(platforms).where(eq(platforms.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Initialize sample data if tables are empty
+  async initializeSampleData(): Promise<void> {
+    const existingProducts = await this.db.select().from(products).limit(1);
+    if (existingProducts.length > 0) return; // Data already exists
+
+    // Initialize categories
+    const sampleCategories = [
+      {
+        name: "Electronics",
+        description: "Mobile phones, laptops, and electronic gadgets",
+        isActive: true
+      },
+      {
+        name: "Fashion",
+        description: "Clothing, accessories, and fashion items", 
+        isActive: true
+      },
+      {
+        name: "Home & Garden",
+        description: "Home appliances, furniture, and garden items",
+        isActive: true
+      },
+      {
+        name: "Books",
+        description: "Books, eBooks, and educational materials",
+        isActive: true
+      },
+      {
+        name: "Sports",
+        description: "Sports equipment and fitness gear",
+        isActive: true
+      }
+    ];
+
+    // Initialize platforms
+    const samplePlatforms = [
+      {
+        name: "Amazon",
+        icon: "🛒",
+        color: "#FF9900",
+        isActive: true
+      },
+      {
+        name: "Flipkart",
+        icon: "🛍️",
+        color: "#2874F0",
+        isActive: true
+      },
+      {
+        name: "Myntra",
+        icon: "👕",
+        color: "#FF3F6C",
+        isActive: true
+      }
+    ];
+
+    await this.db.insert(categories).values(sampleCategories);
+    await this.db.insert(platforms).values(samplePlatforms);
+
+    // Initialize sample products
+    const sampleProducts = [
+      {
+        title: "Latest Smartphone Pro Max 256GB",
+        description: "Latest flagship smartphone with advanced features and high-performance processor",
+        originalPrice: "99999",
+        discountedPrice: "54999",
+        imageUrl: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        affiliateLink: "https://www.amazon.in/s?k=smartphone+pro+max&tag=smartdealsai-21",
+        platform: "Amazon",
+        category: "Electronics",
+        featured: true,
+        autoFetchPrice: true,
+        rating: "4.5",
+        reviewCount: "4500",
+        discountPercentage: "45%"
+      },
+      {
+        title: "Premium Winter Jacket - Unisex",
+        description: "High-quality winter jacket with thermal insulation",
+        originalPrice: "4999",
+        discountedPrice: "1999",
+        imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        affiliateLink: "https://www.myntra.com/jackets?src=search&utm_source=smartdealsai",
+        platform: "Myntra",
+        category: "Fashion",
+        featured: true,
+        autoFetchPrice: false,
+        rating: "4.0",
+        reviewCount: "2100",
+        discountPercentage: "60%"
+      },
+      {
+        title: "Digital Air Fryer 5L Capacity",
+        description: "Energy-efficient air fryer for healthy cooking",
+        originalPrice: "12999",
+        discountedPrice: "8499",
+        imageUrl: "https://images.unsplash.com/photo-1586362777494-0de0fb439ea8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        affiliateLink: "https://www.flipkart.com/search?q=air+fryer&affid=smartdealsai",
+        platform: "Flipkart",
+        category: "Home & Garden",
+        featured: true,
+        autoFetchPrice: true,
+        rating: "5.0",
+        reviewCount: "5800",
+        discountPercentage: "35%"
+      },
+      {
+        title: "Bestseller Book Collection (Set of 5)",
+        description: "Collection of popular fiction and non-fiction bestsellers",
+        originalPrice: "1999",
+        discountedPrice: "1499",
+        imageUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300",
+        affiliateLink: "https://www.amazon.in/s?k=book+collection&tag=smartdealsai-21",
+        platform: "Amazon",
+        category: "Books",
+        featured: false,
+        autoFetchPrice: false,
+        rating: "4.5",
+        reviewCount: "1200",
+        discountPercentage: "25%"
+      }
+    ];
+
+    await this.db.insert(products).values(sampleProducts);
+  }
+}
+
+// Use database storage in production, memory storage in development if needed
+const storage = new DatabaseStorage();
+
+// Initialize sample data on startup
+storage.initializeSampleData().catch(console.error);
+
+export { storage };
