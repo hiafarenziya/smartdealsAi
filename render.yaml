@@ -3,7 +3,8 @@ services:
     name: smart-deals-ai
     env: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: npm run build
+    postDeployCommand: node scripts/setup-db.js && npx -y drizzle-kit@0.30.6 push
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -12,6 +13,10 @@ services:
         fromDatabase:
           name: smart-deals-ai-db
           property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: SENDGRID_API_KEY
+        sync: false
     autoDeploy: false
 
 databases:
