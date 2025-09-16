@@ -140,19 +140,19 @@ export default function Home() {
             
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 max-w-3xl mx-auto">
-              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+              <div className="text-center p-4 rounded-xl bg-card/30">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2" data-testid="stat-products">10K+</div>
                 <div className="text-xs sm:text-sm text-muted-foreground">Products</div>
               </div>
-              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+              <div className="text-center p-4 rounded-xl bg-card/30">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary mb-1 sm:mb-2" data-testid="stat-savings">50%</div>
                 <div className="text-xs sm:text-sm text-muted-foreground">Avg. Savings</div>
               </div>
-              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+              <div className="text-center p-4 rounded-xl bg-card/30">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-accent mb-1 sm:mb-2" data-testid="stat-monitoring">24/7</div>
                 <div className="text-xs sm:text-sm text-muted-foreground">AI Monitoring</div>
               </div>
-              <div className="text-center p-4 rounded-xl bg-card/30 border border-border/50">
+              <div className="text-center p-4 rounded-xl bg-card/30">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 sm:mb-2" data-testid="stat-users">5K+</div>
                 <div className="text-xs sm:text-sm text-muted-foreground">Happy Users</div>
               </div>
